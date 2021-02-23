@@ -16,8 +16,8 @@ def login(request):
             auth.login(request,user)
             return redirect('/')
         else:
-            messages.info(request,'Invalid username/password')
-            return redirect('/accounts/login')
+            messages.info(request,'Incorrect Username/Password')
+            return redirect('login')
     
     else:
         
@@ -31,29 +31,28 @@ def register(request):
         password=request.POST['password']
         cpassword=request.POST['confirmpassword']
         mobileno=request.POST['mobileno']
-        creditcard=request.POST['creditcard']
         address=request.POST['address']
 
         if password==cpassword:
 
             if User.objects.filter(username=username).exists():    
                 messages.info(request,'Username is already taken')
-                return redirect('/accounts/register')
+                return redirect('register')
             
             elif User.objects.filter(email=email).exists():    
                 messages.info(request,'Email is already taken')
-                return redirect('/accounts/register')
+                return redirect('register')
 
             else:
                 user=User.objects.create_user(username=username,email=email,password=password)
                 user.save()
-                customer=Customer(user=user,mobileNo=mobileno,address=address,creditCardInfo=creditcard)
+                customer=Customer(user=user,mobileNo=mobileno,address=address)
                 customer.save()
-                return redirect('/')
+                return redirect('login')
         
         else:
             messages.info(request,'Password doesn\'t match')
-            return redirect('/accounts/register')
+            return redirect('register')
     else:
         
         return render(request,'registration.html')
@@ -61,3 +60,32 @@ def register(request):
 def logout(request):
     auth.logout(request)
     return redirect('/')
+
+
+def reset(request):
+
+    if request.method=="POST":
+        username=request.POST['username']
+        password=request.POST['password']
+        cpassword=request.POST['confirmpassword']
+
+        if User.objects.filter(username=username).exists():
+            if password==cpassword:
+                user=User.objects.get(username=username)
+                user.set_password(password)
+                user.save()
+                return redirect('login')
+            else:
+                messages.info(request,'Password doesn\'t match')
+                return redirect('reset')
+        else:
+            messages.info(request,'Username doesn\'t exists')
+            return redirect('reset')
+    else:
+        return render(request,'resetpass.html')
+
+
+def viewProfile(request):
+
+    customer=Customer.objects.get(user_id=request.user.id)
+    return render(request,'viewProfile.html',{'customer':customer})

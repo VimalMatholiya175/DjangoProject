@@ -1,39 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'basicAccounts.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Registration Page</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/registration_style.css' %}" />
-</head>
+{% block title %} Sign Up | Wonder Cart {% endblock %}
 
-<body>
-    
-    <div class="container">
-        <div class="heading">
-            <h6>Registration</h6>
-        </div>
-        <form action="register" method="post" class="formclass">
+{% block css %}
 
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="container" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
+        
+        <h3 align="center">Sign Up</h3><br>
+
+        {% for msg in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00">
+                    {{msg}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>    
+        {% endfor %}
+
+        <form action="register" method="post">
             {% csrf_token %}
-            <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
-            <input type="password" name="confirmpassword" placeholder="Re-enter Password">
-            <input type="email" name="email" placeholder="Email">
-            <input type="number" name="mobileno" placeholder="Mobile No.">
-            <input type="text" name="creditcard" placeholder="Credit Card Details">
-            <input type="text" name="address" placeholder="Adress">
-            <input type="submit" value="Sign Up" class="btn">
-            <div class="msg">
-                {% for msg in messages %}
-                <h6>{{msg}}</h6>
-                {% endfor %}
+            <div class="mb-3">
+                <input type="text" class="form-control"  name="username" placeholder="Username" required>
             </div>
+            <div class="mb-3">
+                <input type="email" class="form-control" name="email"  placeholder="Email" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" name="confirmpassword" placeholder="Confirm Password" required>
+            </div>
+            <div class="mb-3">
+                <input type="tel" class="form-control" name="mobileno" placeholder="Mobile No." required>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" name="address" placeholder="Address" required>
+            </div>
+            <input type="submit"  value="SignUp" class="btn btn-primary" style="width: 100%;">
+            <input type="reset"  class="btn btn-primary my-3" style="width: 100%;">
+            
         </form>
-    </div>
-</body>
+          
 
-</html>
+    </div>
+
+{% endblock %}
+

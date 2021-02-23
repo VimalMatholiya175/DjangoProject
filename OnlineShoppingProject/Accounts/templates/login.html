@@ -1,39 +1,46 @@
-<!doctype html>
-<html lang="en">
+{% extends 'basicAccounts.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Page</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login_style.css' %}" />
-</head>
+{% block title %} Log In | Wonder Cart {% endblock %}
 
-<body>
-    <div class="containerfull">
+{% block css %}
 
-        <div class="heading">
-            <h2>Sign In</h2>
-        </div>
+{% endblock %}
 
-        <form action="login" method="post" class="formclass">
+
+{% block body %}
+    
+    
+
+    <div class="container" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
+        
+        <h3 align="center">Log In</h3><br>
+        
+        {% for msg in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00">
+                    {{msg}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>    
+        {% endfor %}
+    
+        <form action="login" method="post">
             {% csrf_token %}
-            <div class="container">
-                <input type="text" placeholder="Username" name="username" required>
-                <input type="password" placeholder="Password" name="password" required>
-                <div class="check">
-                    <input type="checkbox" name="remember"> Remember me
-                </div>
-                <button type="submit">Login</button>
-                <a href="#">Forgot password?</a>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control"  name="username" id="username" required>
             </div>
-            <div class="msg">
-                {% for msg in messages %}
-                <h6>{{msg}}</h6>
-                {% endfor %}
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <p style="display:inline; float: right; "> <a href="reset">Forgot Password?</a></p>
+                <input type="password" class="form-control" name="password" id="password" required>
             </div>
+            <input type="submit"  value="LogIn" class="btn btn-primary" style="width: 100%;"><br>
+            <hr>
+            <p align="center">New to WonderCart?</a></p>
+            <a href="register"><button type="button" class="btn btn-primary" style="width: 100%;">create Account</button></a>
         </form>
-    </div>
-</body>
+        <br><br>  
 
-</html>
+    </div>
+
+
+{% endblock %}
