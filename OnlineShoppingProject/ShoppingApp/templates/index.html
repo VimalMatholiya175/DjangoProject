@@ -1,0 +1,85 @@
+{% extends 'basicHome.html' %}
+
+
+{% block extra %} {% endblock %}
+
+{% block title %} Wonder Cart {% endblock %}
+
+{% block css %}
+<style>
+    .category {
+        padding: 7px;
+        border: 1px solid rgb(255, 208, 0);
+        margin:10px 5px;
+    }
+
+    .cat-name {
+        background-color: rgb(34, 33, 33);
+        height: 40px;
+        border: 1px solid #e1e1e6;
+        color: #f3f3f9;
+    }
+
+    .cat-name h4 {
+        margin-left:20px;
+        margin-top:4px;
+        display: inline-block;
+    }
+
+    .cat-name a {
+        text-decoration: none;
+        color: #198754;
+        margin: 4px 10px;
+        padding: 2px 14px;
+        background-color: rgb(34, 33, 33);
+        float: right;
+        border:1px solid #198754;
+        border-radius: 3px;
+        width: 87px;
+    }
+    .cat-name a:hover {
+        background-color: #198754;
+        color:white;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block body %}
+
+{% for products in allProducts %}
+<div class="category">
+    <div class="cat-name">
+        <h4>{{products.0.category}}</h4>
+        <a href="#">View All</a>
+    </div>
+    <div class="row row-cols-1 row-cols-md-4 g-4" style="margin-top:3px;">
+
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100">
+                <a href="/viewProduct?id={{product.id}}"><img src="/media/{{product.image}}" class="card-img-top" /></a>
+                <div class="card-body">
+                    <a href="/viewProduct?id={{product.id}}" style="text-decoration: none;color:black">
+                        <h6 class="card-title" style="font-size: 17px;font-weight: inherit">{{product.name}}</h6>
+                    </a>
+                    <h4 class="card-text" style="color:blue">Rs.{{product.price}}</h4>
+                    {% if product.discount > 0 %}
+                        <h6 class="card-text" style="color:#3fca62">{{product.discount}}% off</h6>
+                    {% endif %}
+                    {% if not product.quantity %}
+                        <p style="color: red;">Out Of Stock</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">In Stock From {{product.pubDate}}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

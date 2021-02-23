@@ -1,0 +1,52 @@
+{% extends 'basicAccounts.html' %}
+
+{% block title %} Sign Up | Wonder Cart {% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="container" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
+        
+        <h3 align="center">Sign Up</h3><br>
+
+        {% for msg in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00">
+                    {{msg}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>    
+        {% endfor %}
+
+        <form action="register" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" class="form-control"  name="username" placeholder="Username" required>
+            </div>
+            <div class="mb-3">
+                <input type="email" class="form-control" name="email"  placeholder="Email" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" name="confirmpassword" placeholder="Confirm Password" required>
+            </div>
+            <div class="mb-3">
+                <input type="tel" class="form-control" name="mobileno" placeholder="Mobile No." required>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" name="address" placeholder="Address" required>
+            </div>
+            <input type="submit"  value="SignUp" class="btn btn-primary" style="width: 100%;">
+            <input type="reset"  class="btn btn-primary my-3" style="width: 100%;">
+            
+        </form>
+          
+
+    </div>
+
+{% endblock %}
+
