@@ -1,0 +1,40 @@
+{% extends 'basicHome.html' %}
+
+{% block title %}{{product.name|slice:"0:15"}}... | Wonder Cart {% endblock %}
+
+{% block css %}
+
+
+
+
+{% endblock %}
+
+
+
+{% block body %}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="row">
+                <img src="/media//{{product.image}}" width="303px" height="385px">
+            </div>
+        </div>
+        <div class="col-md-7 my-5" >
+            <h3>{{product.name}}</h3>
+            <h4 class="card-text" style="color:blue">Rs.{{product.price}}</h4>
+            {% if product.discount > 0 %}
+                <h6 class="card-text" style="color:#3fca62">{{product.discount}}% off</h6>
+            {% endif %}
+            {% if not product.quantity %}
+                <p style="color: red;">Out Of Stock</p>
+            {% endif %}
+            <p>{{product.desc | linebreaks}}</p>
+            <button class="btn btn-primary my-5"> Buy Now</button>
+            <button class="btn btn-primary my-5 mx-2 "> Add To Cart</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
