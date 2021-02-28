@@ -23,9 +23,11 @@ def login(request):
         
         return render(request,'login.html')
 
-def register(request):
+def signup(request):
     if request.method=='POST':
 
+        firstname=request.POST['firstname']
+        lastname=request.POST['lastname']
         username=request.POST['username']
         email=request.POST['email']
         password=request.POST['password']
@@ -37,14 +39,14 @@ def register(request):
 
             if User.objects.filter(username=username).exists():    
                 messages.info(request,'Username is already taken')
-                return redirect('register')
+                return redirect('signup')
             
             elif User.objects.filter(email=email).exists():    
                 messages.info(request,'Email is already taken')
-                return redirect('register')
+                return redirect('signup')
 
             else:
-                user=User.objects.create_user(username=username,email=email,password=password)
+                user=User.objects.create_user(first_name=firstname,last_name=lastname,username=username,email=email,password=password)
                 user.save()
                 customer=Customer(user=user,mobileNo=mobileno,address=address)
                 customer.save()
@@ -52,17 +54,17 @@ def register(request):
         
         else:
             messages.info(request,'Password doesn\'t match')
-            return redirect('register')
+            return redirect('signup')
     else:
         
-        return render(request,'registration.html')
+        return render(request,'signup.html')
 
 def logout(request):
     auth.logout(request)
     return redirect('/')
 
 
-def reset(request):
+def resetPassword(request):
 
     if request.method=="POST":
         username=request.POST['username']
@@ -77,15 +79,34 @@ def reset(request):
                 return redirect('login')
             else:
                 messages.info(request,'Password doesn\'t match')
-                return redirect('reset')
+                return redirect('resetPassword')
         else:
             messages.info(request,'Username doesn\'t exists')
-            return redirect('reset')
+            return redirect('resetPassword')
     else:
-        return render(request,'resetpass.html')
+        return render(request,'resetPassword.html')
 
 
 def viewProfile(request):
+    if request.method=='POST':
+        request.user.first_name=request.POST.get('firstname','')
+        request.user.last_name=request.POST.get('lastname','')
+        request.user.username=request.POST.get('username','')
+        request.user.email=request.POST.get('email','')
+        request.user.save()
+        customer=Customer.objects.get(user_id=request.user.id)
+        customer.mobileNo=request.POST.get('mobileno','')
+        customer.address=request.POST.get('address','')
+        customer.save()
 
-    customer=Customer.objects.get(user_id=request.user.id)
-    return render(request,'viewProfile.html',{'customer':customer})
+        request.user.save()
+        return redirect('/accounts/viewProfile')
+
+    else:
+
+        if request.user.is_authenticated :
+            customer=Customer.objects.get(user_id=request.user.id)
+            return render(request,'viewProfile.html',{'customer':customer})
+
+        else:
+            return redirect('/')

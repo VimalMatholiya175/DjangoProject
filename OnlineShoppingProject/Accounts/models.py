@@ -6,5 +6,5 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    mobileNo=models.IntegerField()
+    mobileNo=models.BigIntegerField()
     address=models.CharField(max_length=50)

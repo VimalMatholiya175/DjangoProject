@@ -1,0 +1,63 @@
+{% extends 'basicHome.html' %}
+
+
+{% block extra %} {% endblock %}
+
+{% block title %} Wonder Cart {% endblock %}
+
+
+{% block filter %}
+
+
+{% endblock %}
+
+{% block search %}
+
+<form  action="/viewProducts/search" class="d-flex mx-5">
+    <input class="form-control me-2" type="text" name="keyword" value="{{keyword}}" placeholder="Search" aria-label="Search" required style="width:600px;">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+{% endblock %}
+
+
+{% block body %}
+
+{% if matchedCategories|length > 0 %}
+
+{% for category in matchedCategories %}
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+        {% for product in category %}
+
+        <div class="col">
+            <div class="card h-100">
+                <a href="/viewProducts/viewDetails?id={{product.id}}">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                </a>
+                <div class="card-body">
+                    <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+                        <h6 class="card-title">{{product.name}}</h6>
+                    </a>
+                    <h5 class="card-text" style="display:inline-block">₹ {{product.price}}</h5>
+                    {% if product.discount > 0 %}
+                    <h6 class="card-text mx-2" style="color:#0a02ff;display:inline-block;">{{product.discount}}% Off
+                    </h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<h5 style="margin:100px 200px;">No Matches were found...</h5>
+
+{% endif %}
+
+{% endblock %}

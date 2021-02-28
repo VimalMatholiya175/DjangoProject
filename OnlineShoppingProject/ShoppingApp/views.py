@@ -1,31 +1,26 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 
-from .models import Product
+from .models import Category,Product
 # Create your views here.
 
 def home(request):
-	prods=Product.objects.values()
-	categories={item['category'] for item in prods}
-	category=request.GET.get('category',None)
 
-	if category==None:
-		allProducts=[]
-		for cat in categories:
-			product=Product.objects.filter(category=cat)
-			allProducts.append(product)
-	else:
-		allProducts=[]
-		categories.remove(category)
-		product=Product.objects.filter(category=category)
-		allProducts.append(product)
+	categories=Category.objects.all()
 
-	return render(request,'index.html',{'allProducts':allProducts,'categories':categories,'scategory':category})
+	specialProducts=Product.objects.filter(specialOffer=True)
+	activeProduct=specialProducts[0]
+	otherSpecialProducts=specialProducts[1:]
 
-def viewProduct(request):
+	allProducts=[]
 
-	id=request.GET['id']
-	product=Product.objects.filter(id=id)
+	for category in categories:
+		products=Product.objects.filter(category=category)
+		allProducts.append(products)
 	
-	
-	return render(request,'viewProduct.html',{'product':product[0]})
+	data={'allProducts':allProducts,'categories':categories,'specialProducts':otherSpecialProducts,'activeProduct':activeProduct}
+
+	return render(request,'index.html',data)
+
+
 

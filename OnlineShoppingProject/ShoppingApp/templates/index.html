@@ -3,77 +3,154 @@
 
 {% block extra %} {% endblock %}
 
+
 {% block title %} Wonder Cart {% endblock %}
 
+
 {% block css %}
+
 <style>
-    .category {
-        padding: 7px;
-        border: 1px solid rgb(255, 208, 0);
-        margin:10px 5px;
+    .specialProducts{
+        margin:20px 25px;
+        padding:0px 50px;
+        border:1px solid rgb(255, 217, 0);
+        border-radius: 6px;
     }
-
-    .cat-name {
-        background-color: rgb(34, 33, 33);
+    .specialProducts img{
+        height: 450px;
+    }
+    .specialOfferDesc{
+        padding:100px;
+    }
+    .mycontainer {
+        width: 1115px;
+        padding: 15px;
+        border: 1px solid rgb(255, 238, 0);
+        margin: 20px auto;
+        border-radius: 6px;
+    }
+    .center-block {
+        width: 40px;
         height: 40px;
-        border: 1px solid #e1e1e6;
-        color: #f3f3f9;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
-
-    .cat-name h4 {
-        margin-left:20px;
-        margin-top:4px;
-        display: inline-block;
-    }
-
-    .cat-name a {
+    .mycontainer a{
         text-decoration: none;
-        color: #198754;
-        margin: 4px 10px;
-        padding: 2px 14px;
-        background-color: rgb(34, 33, 33);
-        float: right;
-        border:1px solid #198754;
-        border-radius: 3px;
-        width: 87px;
+        color: black;
     }
-    .cat-name a:hover {
-        background-color: #198754;
-        color:white;
+    .search{
+        width:600px;
     }
 </style>
+
 {% endblock %}
 
 
+{% block search %}
+
+<form  action="/viewProducts/search" class="d-flex search">
+    <input class="form-control me-2" type="text" name="keyword" placeholder="Search" aria-label="Search" required>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+{% endblock %}
+
 
 {% block body %}
+<div id="specialProducts" class="carousel slide align-items-center specialProducts" data-bs-ride="carousel" >
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#specialProducts" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 0"></button>
+        
+        {% for product in specialProducts %}
+            
+            <button type="button" data-bs-target="#specialProducts" data-bs-slide-to="{{forloop.counter}}" aria-label="Slide {{forloop.counter}}"></button>
+        
+        {% endfor %}
+    
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="row">
+                <div class="col align-items-center">
+                    <img src="/media/{{activeProduct.image}}" class="d-block w-100"  alt="...">
+                </div>
+                <div class="col specialOfferDesc">
+                    <h3>{{activeProduct.name}}</h3>
+                    <h3>₹ {{activeProduct.price}}</h3>
+                    <h5>{{activeProduct.specialOfferDesc|linebreaks}}</h5>
+                    <a class="btn btn-dark" href="#">Buy Now</a>
+                    <a class="btn btn-dark mx-2" href="/viewProducts/viewDetails?id={{activeProduct.id}}">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        {% for product in specialProducts %}
+            <div class="carousel-item">
+                <div class="row">
+                    <div class="col align-items-center">
+                        <img src="/media/{{product.image}}" alt="...">
+                    </div>
+                    <div class="col specialOfferDesc">
+
+                        <h3>{{product.name}}</h3>
+                        <h3>₹ {{product.price}}</h3>
+                        <h5>{{product.specialOfferDesc|linebreaks}}</h5>
+                        <a class="btn btn-dark" href="#">Buy Now</a>
+                        <a class="btn btn-dark mx-2" href="/viewProducts/viewDetails?id={{product.id}}">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#specialProducts" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#specialProducts" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="mycontainer">
+
+    <div class="row">
+        {% for category in categories %}
+            <div class="col">
+                <a href="/viewProducts/displayCategory?cat={{category.name}}">
+                    <img src="/media/{{category.image}}" alt="..." class="center-block">
+                    <h6 style="text-align: center;">{{category.name}}</h6>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
 
 {% for products in allProducts %}
-<div class="category">
-    <div class="cat-name">
-        <h4>{{products.0.category}}</h4>
-        <a href="#">View All</a>
-    </div>
-    <div class="row row-cols-1 row-cols-md-4 g-4" style="margin-top:3px;">
-
+<hr style="width: 1300px;margin: 10px 25px">
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
         {% for product in products %}
+
         <div class="col">
             <div class="card h-100">
-                <a href="/viewProduct?id={{product.id}}"><img src="/media/{{product.image}}" class="card-img-top" /></a>
+                <a href="/viewProducts/viewDetails?id={{product.id}}">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                </a>
                 <div class="card-body">
-                    <a href="/viewProduct?id={{product.id}}" style="text-decoration: none;color:black">
-                        <h6 class="card-title" style="font-size: 17px;font-weight: inherit">{{product.name}}</h6>
+                    <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+                        <h6 class="card-title">{{product.name}}</h6>
                     </a>
-                    <h4 class="card-text" style="color:blue">Rs.{{product.price}}</h4>
+                    <h5 class="card-text" style="display:inline-block">₹ {{product.price}}</h5>
                     {% if product.discount > 0 %}
-                        <h6 class="card-text" style="color:#3fca62">{{product.discount}}% off</h6>
+                    <h6 class="card-text mx-2" style="color:#0a02ff;display:inline-block;">{{product.discount}}% Off
+                    </h6>
                     {% endif %}
-                    {% if not product.quantity %}
-                        <p style="color: red;">Out Of Stock</p>
-                    {% endif %}
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">In Stock From {{product.pubDate}}</small>
                 </div>
             </div>
         </div>
@@ -81,5 +158,4 @@
     </div>
 </div>
 {% endfor %}
-
 {% endblock %}

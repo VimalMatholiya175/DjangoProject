@@ -1,0 +1,23 @@
+<div class="row row-cols-1 row-cols-md-4 g-4" style="margin-top:3px;">
+
+    {% for product in products %}
+    <div class="col">
+        <div class="card h-100">
+            <a href="/viewProduct?id={{product.id}}"><img src="/media/{{product.image}}" class="card-img-top" /></a>
+            <div class="card-body">
+                <a href="/viewProduct?id={{product.id}}" style="text-decoration: none;color:black">
+                    <h6 class="card-title" style="font-size: 17px;font-weight: inherit">{{product.name}}</h6>
+                </a>
+                <h4 class="card-text" style="color:blue">Rs.{{product.price}}</h4>
+                {% if product.discount > 0 %}
+                    <h6 class="card-text" style="color:#3fca62">{{product.discount}}% off</h6>
+                {% endif %}
+                {% if not product.quantity %}
+                    <p style="color: red;">Out Of Stock</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">In Stock From {{product.pubDate}}</small>
+            </div>
+        </div>
+    </div>

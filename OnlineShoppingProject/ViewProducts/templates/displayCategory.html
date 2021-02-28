@@ -1,0 +1,183 @@
+{% extends 'basicHome.html' %}
+
+
+{% block extra %} {% endblock %}
+
+
+{% block title %} Wonder Cart {% endblock %}
+
+
+{% block css %}
+
+<style>
+    
+    .mycontainer {
+        width: 1115px;
+        padding: 15px;
+        border: 1px solid rgb(255, 217, 0);
+        margin: 20px auto;
+        border-radius: 6px;
+    }
+    .center-block {
+        width: 40px;
+        height: 40px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .mycontainer a{
+        text-decoration: none;
+        color: black;
+    }
+
+    .search{
+        width:600px;
+    }
+    .filter{
+        margin-left: 150px;
+        color: gray;
+    }
+    
+</style>
+
+{% endblock %}
+
+
+{% block search %}
+
+<form  action="/viewProducts/search" class="d-flex search">
+
+    <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" aria-label="Search" required>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+
+</form>
+
+{% endblock %}
+
+
+{% block filter %}
+
+<button class="btn btn-light mx-2 filter" data-bs-toggle="modal" data-bs-target="#filtermodal" aria-current="page">Filter</button>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="modal fade" id="filtermodal" tabindex="-1" aria-labelledby="filter" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/viewProducts/xfilter">
+                <input type="hidden" name="cat" value="{{category}}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Price</h5>
+                </div>
+                <div class="modal-body">
+                    <input class="form-check-input" type="radio" name="price" id="lowToHigh" value="lth">
+                    <label class="form-check-label mx-2" for="lowToHigh">Low-High</label>
+                    <input class="form-check-input" type="radio" name="price" id="highToLow" value="htl">
+                    <label class="form-check-label mx-2" for="highToLow">High-Low</label>
+                </div>
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Brand</h5>
+                </div>
+                <div class="modal-body">
+                    {% for company in companies %}
+                        {% if forloop.counter|divisibleby:"6" %}
+                            <br><br>
+                        {% endif %}    
+                        <input class="form-check-input" type="radio" name="company" id="company{{forloop.counter}}" value="{{company}}">
+                        <label class="form-check-label mx-2" for="company{{forloop.counter}}">{{company}}</label>
+                    {% endfor %}
+                </div>
+
+                {% if sizes|length > 0 %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filter">RAM-Storage</h5>
+                    </div>
+                    <div class="modal-body">
+                        {% for ram,storage in sizes %}
+                            {% if forloop.counter|divisibleby:"4" %}
+                                <br><br>
+                            {% endif %}
+                            <input class="form-check-input" type="radio" name="size" id="size{{forloop.counter}}" value="{{ram}} | {{storage}}">
+                            <label class="form-check-label mx-2" for="size{{forloop.counter}}">{{ram}} | {{storage}}</label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Color</h5>
+                </div>
+                <div class="modal-body">
+                    {% for color in colors %}
+                        {% if forloop.counter|divisibleby:"5" %}
+                            <br><br>
+                        {% endif %} 
+                        <input class="form-check-input" type="radio" name="color" id="color{{forloop.counter}}" value="{{color}}">
+                        <label class="form-check-label mx-2" for="color{{forloop.counter}}">{{color}}</label>
+                    {% endfor %}
+                </div>
+                
+                <div class="modal-footer">
+                    <button  type="submit" class="btn btn-primary">Apply</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mycontainer">
+
+    <div class="row">
+        {% for category in categories %}
+            <div class="col">
+                <a href="/viewProducts/displayCategory?cat={{category.name}}">
+                    <img src="/media/{{category.image}}" alt="..." class="center-block">
+                    <h6 style="text-align: center;">{{category.name}}</h6>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% if message is None %}
+
+{% for products in allProducts %}
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+        {% for product in products %}
+
+        <div class="col">
+            <div class="card h-100">
+                <a href="/viewProducts/viewDetails?id={{product.id}}">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                </a>
+                <div class="card-body">
+                    <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+                        <h6 class="card-title">{{product.name}}</h6>
+                    </a>
+                    <h5 class="card-text" style="display:inline-block">₹ {{product.price}}</h5>
+                    {% if product.discount > 0 %}
+                    <h6 class="card-text mx-2" style="color:#0a02ff;display:inline-block;">{{product.discount}}% Off
+                    </h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+{% else %}
+
+<h5 style="margin:100px 200px;">{{message}}</h5>
+
+{% endif %}
+
+{% endblock %}

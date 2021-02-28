@@ -2,18 +2,12 @@
 
 {% block title %} Log In | Wonder Cart {% endblock %}
 
-{% block css %}
-
-{% endblock %}
-
 
 {% block body %}
-    
-    
 
     <div class="container" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
         
-        <h3 align="center">Log In</h3><br>
+        <h3 style="text-align: center;">Log In</h3><br>
         
         {% for msg in messages %}
             <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00">
@@ -30,13 +24,13 @@
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <p style="display:inline; float: right; "> <a href="reset">Forgot Password?</a></p>
+                <p style="display:inline; float: right; "> <a href="resetPassword">Forgot Password?</a></p>
                 <input type="password" class="form-control" name="password" id="password" required>
             </div>
             <input type="submit"  value="LogIn" class="btn btn-primary" style="width: 100%;"><br>
             <hr>
-            <p align="center">New to WonderCart?</a></p>
-            <a href="register"><button type="button" class="btn btn-primary" style="width: 100%;">create Account</button></a>
+            <p style="text-align: center;">New to WonderCart?</a></p>
+            <a href="signup" class="btn btn-primary" style="width: 100%;">Create New Account</a>
         </form>
         <br><br>  
 
