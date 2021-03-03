@@ -1,31 +1,72 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.contrib import messages
+from django.http import HttpResponse
 
-from .models import Product
+from .models import Category,Product
 # Create your views here.
 
 def home(request):
-	prods=Product.objects.values()
-	categories={item['category'] for item in prods}
-	category=request.GET.get('category',None)
 
-	if category==None:
-		allProducts=[]
-		for cat in categories:
-			product=Product.objects.filter(category=cat)
-			allProducts.append(product)
+	categories=Category.objects.all()
+
+	specialProducts=Product.objects.filter(specialOffer=True)
+	activeProduct=specialProducts[0]
+	otherSpecialProducts=specialProducts[1:]
+
+	allProducts=[]
+
+	for category in categories:
+		products=Product.objects.filter(category=category)
+		allProducts.append(products)
+	
+	data={'allProducts':allProducts,'categories':categories,'specialProducts':otherSpecialProducts,'activeProduct':activeProduct,'forRam':['Mobile','Laptop']}
+
+	return render(request,'index.html',data)
+
+def addToCart(request):
+
+	if not request.user.is_authenticated :
+
+		messages.info(request,'Login first...')
+		return redirect('/accounts/login')
+
+	productId=request.GET.get('id',None)
+
+	if productId is None:
+		return redirect('/')
+
+	cart=request.session.get('cart')
+	if cart :
+		quantity=cart.get(productId)
+		if quantity:
+			cart[productId]=quantity+1
+		else:
+			cart[productId]=1
 	else:
-		allProducts=[]
-		categories.remove(category)
-		product=Product.objects.filter(category=category)
-		allProducts.append(product)
+		cart={productId:1}
+		
+	request.session['cart']=cart
+	# print(cart)
+	return redirect('/viewProducts/viewDetails?id='+productId)
 
-	return render(request,'index.html',{'allProducts':allProducts,'categories':categories,'scategory':category})
+def iQuantity(request):
+	productId=request.GET.get('id',None)
 
-def viewProduct(request):
+	if productId is None:
+		return redirect('/')
 
-	id=request.GET['id']
-	product=Product.objects.filter(id=id)
-	
-	
-	return render(request,'viewProduct.html',{'product':product[0]})
+	cart=request.session.get('cart')
+	cart[productId]+=1
+	request.session['cart']=cart
+	return redirect('/viewProducts/viewDetails?id='+productId)
 
+def dQuantity(request):
+	productId=request.GET.get('id',None)
+
+	if productId is None:
+		return redirect('/')
+
+	cart=request.session.get('cart')
+	cart[productId]-=1
+	request.session['cart']=cart
+	return redirect('/viewProducts/viewDetails?id='+productId)

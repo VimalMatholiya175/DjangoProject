@@ -1,0 +1,57 @@
+{% extends 'basicHome.html' %}
+
+{% block title %}{{product.name}} | Wonder Cart {% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-5 my-2">
+            <div class="row">
+                <img src="/media//{{product.image}}" width="300px" height="380px">
+            </div>
+        </div>
+        <div class="col-md-7 my-2" >
+            <h3>{{product.name}}</h3>
+
+            <button class="card-text btn btn-dark btn-sm">₹ {{product.price}}</button>
+            
+            {% if not product.quantity %}
+                <h6 class="card-text mx-3" style="display: inline-block;color: red;">Out Of Stock</h6>
+            {% endif %}
+
+            {% if product.quantity and product.discount > 0 %}
+                <h6 class="card-text mx-3" style="display: inline-block;color:#0004ff">{{product.discount}}% Off</h6>
+            {% endif %}
+
+            <h5 class="my-3"> {{product.color}}</h5>
+            
+            {% if product.category.name in forRam %}
+                <h5> {{product.ram}} | {{product.storage}}</h5>
+            {% endif %}
+
+            <p> {{desc|linebreaks}}</p>
+            
+            <button class="btn btn-primary"> Buy Now</button>
+            {% if isInCart and quantity %}
+                <div class="btn-group mx-3" role="group" aria-label="Basic outlined example">
+                    <a class="btn btn-outline-primary" href="/dQuantity?id={{product.id}}">-</a>
+                    <button type="button" class="btn btn-outline-primary">{{quantity}}</button>
+                    <a class="btn btn-outline-primary" href="/iQuantity?id={{product.id}}">+</a>
+                </div>
+            {% else %}
+                <a class="btn btn-primary mx-3" href="/addToCart?id={{product.id}}">Add To Cart</a>
+            {% endif %}
+                
+                <!-- <input type="hidden" name="id" value="{{product.id}}"> -->
+            <!-- </form>         -->
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,100 @@
+
+{% block filter %}
+
+<button class="btn btn-light mx-2 filter" data-bs-toggle="modal" data-bs-target="#filtermodal" aria-current="page">Filter</button>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="modal fade" id="filtermodal" tabindex="-1" aria-labelledby="filter" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/viewProducts/xfilter">
+                <input type="hidden" name="cat" value="{{category}}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Price</h5>
+                </div>
+                <div class="modal-body">
+                    <input class="form-check-input" type="radio" name="price" id="lowToHigh" value="lth">
+                    <label class="form-check-label mx-2" for="lowToHigh">Low-High</label>
+                    <input class="form-check-input" type="radio" name="price" id="highToLow" value="htl">
+                    <label class="form-check-label mx-2" for="highToLow">High-Low</label>
+                </div>
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Brand</h5>
+                </div>
+                <div class="modal-body">
+                    {% for company in companies %}
+                        {% if forloop.counter|divisibleby:"6" %}
+                            <br><br>
+                        {% endif %}    
+                        <input class="form-check-input" type="radio" name="company" id="company{{forloop.counter}}" value="{{company}}">
+                        <label class="form-check-label mx-2" for="company{{forloop.counter}}">{{company}}</label>
+                    {% endfor %}
+                </div>
+
+                {% if sizes|length > 0 %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filter">RAM-Storage</h5>
+                    </div>
+                    <div class="modal-body">
+                        {% for ram,storage in sizes %}
+                            {% if forloop.counter|divisibleby:"4" %}
+                                <br><br>
+                            {% endif %}
+                            <input class="form-check-input" type="radio" name="size" id="size{{forloop.counter}}" value="{{ram}} | {{storage}}">
+                            <label class="form-check-label mx-2" for="size{{forloop.counter}}">{{ram}} | {{storage}}</label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Color</h5>
+                </div>
+                <div class="modal-body">
+                    {% for color in colors %}
+                        {% if forloop.counter|divisibleby:"5" %}
+                            <br><br>
+                        {% endif %} 
+                        <input class="form-check-input" type="radio" name="color" id="color{{forloop.counter}}" value="{{color}}">
+                        <label class="form-check-label mx-2" for="color{{forloop.counter}}">{{color}}</label>
+                    {% endfor %}
+                </div>
+                
+                <div class="modal-footer">
+                    <button  type="submit" class="btn btn-primary">Apply</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+            <br><br>
+            {% for color,id in colors %}
+                {% if id is product.id %}
+                    <a class="btn btn-light mx-1 border-warning" href="viewDetails?id={{id}}">{{color}}</a>
+                {% else %}
+                    <a class="btn btn-light mx-1" href="viewDetails?id={{id}}">{{color}}</a>
+                {% endif %}
+            
+            {% endfor %}
+
+            {% if product.category.name in forRam %}
+                <br><br>
+                {% for (ram,storage),id in sizes %}
+            
+                    {% if id is product.id %}
+                        <a class="btn btn-light mx-1 border-warning" href="viewDetails?id={{similarProduct.id}}">{{ram}} | {{storage}}</a>
+                    {% else %}
+                        <a class="btn btn-light mx-1" href="viewDetails?id={{similarProduct.id}}">{{ram}} | {{storage}}</a>
+                    {% endif %}
+            
+                {% endfor %}
+            {% endif %}
