@@ -33,9 +33,9 @@
     .search{
         width:600px;
     }
-    .filter{
-        margin-left: 150px;
-        color: gray;
+    
+    .center-details{
+        text-align: center;
     }
     
 </style>
@@ -43,21 +43,21 @@
 {% endblock %}
 
 
+{% block filter %}
+
+<button class="btn btn-outline-success mx-1 filter" data-bs-toggle="modal" data-bs-target="#filtermodal" aria-current="page">Filter</button>
+
+{% endblock %}
+
+
 {% block search %}
 
-<form  action="/viewProducts/search" class="d-flex search">
+<form  action="/viewProducts/search" class="d-flex mx-2 search">
 
     <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" aria-label="Search" required>
     <button class="btn btn-outline-success" type="submit">Search</button>
 
 </form>
-
-{% endblock %}
-
-
-{% block filter %}
-
-<button class="btn btn-light mx-2 filter" data-bs-toggle="modal" data-bs-target="#filtermodal" aria-current="page">Filter</button>
 
 {% endblock %}
 
@@ -89,34 +89,6 @@
                         {% endif %}    
                         <input class="form-check-input" type="radio" name="company" id="company{{forloop.counter}}" value="{{company}}">
                         <label class="form-check-label mx-2" for="company{{forloop.counter}}">{{company}}</label>
-                    {% endfor %}
-                </div>
-
-                {% if sizes|length > 0 %}
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="filter">RAM-Storage</h5>
-                    </div>
-                    <div class="modal-body">
-                        {% for ram,storage in sizes %}
-                            {% if forloop.counter|divisibleby:"4" %}
-                                <br><br>
-                            {% endif %}
-                            <input class="form-check-input" type="radio" name="size" id="size{{forloop.counter}}" value="{{ram}} | {{storage}}">
-                            <label class="form-check-label mx-2" for="size{{forloop.counter}}">{{ram}} | {{storage}}</label>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                
-                <div class="modal-header">
-                    <h5 class="modal-title" id="filter">Color</h5>
-                </div>
-                <div class="modal-body">
-                    {% for color in colors %}
-                        {% if forloop.counter|divisibleby:"5" %}
-                            <br><br>
-                        {% endif %} 
-                        <input class="form-check-input" type="radio" name="color" id="color{{forloop.counter}}" value="{{color}}">
-                        <label class="form-check-label mx-2" for="color{{forloop.counter}}">{{color}}</label>
                     {% endfor %}
                 </div>
                 
@@ -152,23 +124,25 @@
     <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
         {% for product in products %}
 
-        <div class="col">
-            <div class="card h-100">
-                <a href="/viewProducts/viewDetails?id={{product.id}}">
+        <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+            <div class="col">
+                <div class="card h-100">
                     <img src="/media/{{product.image}}" class="card-img-top" />
-                </a>
-                <div class="card-body">
-                    <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
-                        <h6 class="card-title">{{product.name}}</h6>
-                    </a>
-                    <h5 class="card-text" style="display:inline-block">₹ {{product.price}}</h5>
-                    {% if product.discount > 0 %}
-                    <h6 class="card-text mx-2" style="color:#0a02ff;display:inline-block;">{{product.discount}}% Off
-                    </h6>
-                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title center-details">{{product.name}}</h6>
+                    
+                        <h6 class="card-title center-details">{{product.color}} 
+                            {% if product.category.name in forRam %}
+                                ( {{product.ram}} | {{product.storage}} )
+                            {% endif %}
+                        </h6>
+    
+                        <button class="card-text btn btn-outline-dark" style="width: 100%;">₹ {{product.price}}</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
+        
         {% endfor %}
     </div>
 </div>
@@ -176,7 +150,7 @@
 
 {% else %}
 
-<h5 style="margin:100px 200px;">{{message}}</h5>
+<h6 style="margin:100px 200px;">{{message}}</h6>
 
 {% endif %}
 

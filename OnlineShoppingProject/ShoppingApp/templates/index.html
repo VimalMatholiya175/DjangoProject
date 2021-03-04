@@ -1,6 +1,5 @@
 {% extends 'basicHome.html' %}
 
-
 {% block extra %} {% endblock %}
 
 
@@ -43,6 +42,9 @@
     .search{
         width:600px;
     }
+    .center-details{
+        text-align: center;
+    }
 </style>
 
 {% endblock %}
@@ -50,7 +52,7 @@
 
 {% block search %}
 
-<form  action="/viewProducts/search" class="d-flex search">
+<form  action="/viewProducts/search" class="d-flex search mx-2">
     <input class="form-control me-2" type="text" name="keyword" placeholder="Search" aria-label="Search" required>
     <button class="btn btn-outline-success" type="submit">Search</button>
 </form>
@@ -136,24 +138,24 @@
 <div class="container">
     <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
         {% for product in products %}
-
+        <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
         <div class="col">
             <div class="card h-100">
-                <a href="/viewProducts/viewDetails?id={{product.id}}">
-                    <img src="/media/{{product.image}}" class="card-img-top" />
-                </a>
+                <img src="/media/{{product.image}}" class="card-img-top" />
                 <div class="card-body">
-                    <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
-                        <h6 class="card-title">{{product.name}}</h6>
-                    </a>
-                    <h5 class="card-text" style="display:inline-block">₹ {{product.price}}</h5>
-                    {% if product.discount > 0 %}
-                    <h6 class="card-text mx-2" style="color:#0a02ff;display:inline-block;">{{product.discount}}% Off
+                    <h6 class="card-title center-details">{{product.name}}</h6>
+                
+                    <h6 class="card-title center-details">{{product.color}} 
+                        {% if product.category.name in forRam %}
+                            ( {{product.ram}} | {{product.storage}} )
+                        {% endif %}
                     </h6>
-                    {% endif %}
+
+                    <button class="card-text btn btn-outline-dark" style="width: 100%;">₹ {{product.price}}</button>
                 </div>
             </div>
         </div>
+        </a>
         {% endfor %}
     </div>
 </div>

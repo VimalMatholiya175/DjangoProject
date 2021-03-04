@@ -1,37 +1,69 @@
 {% extends 'basicHome.html' %}
 
-{% block title %}{{product.name|slice:"0:20"}}... | Wonder Cart {% endblock %}
+{% block title %}{{product.name}} | Wonder Cart {% endblock %}
+
 
 {% block css %}
-
-
-
-
+<style>
+    
+    .search{
+        width:600px;
+    }
+</style>
 {% endblock %}
 
+
+{% block search %}
+
+<form  action="/viewProducts/search" class="d-flex mx-2 search">
+
+    <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" aria-label="Search" required>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+
+</form>
+
+{% endblock %}
 
 
 {% block body %}
 
 <div class="container my-4">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 my-2">
             <div class="row">
-                <img src="/media//{{product.image}}" width="303px" height="385px">
+                <img src="/media//{{product.image}}" width="300px" height="380px">
             </div>
         </div>
-        <div class="col-md-7 my-5" >
+        <div class="col-md-7 my-2" >
             <h3>{{product.name}}</h3>
-            <h4 class="card-text" style="color:blue">₹ {{product.price}}</h4>
-            {% if product.discount > 0 %}
-                <h6 class="card-text" style="color:#3fca62">{{product.discount}}% Off</h6>
-            {% endif %}
+
+            <button class="card-text btn btn-outline-dark btn-sm">₹ {{product.price}}</button>
+            
             {% if not product.quantity %}
-                <p style="color: red;">Out Of Stock</p>
+                <h6 class="card-text mx-3" style="display: inline-block;color: red;">Out Of Stock</h6>
             {% endif %}
-            <p>{{product.desc | linebreaks}}</p>
-            <button class="btn btn-primary my-5"> Buy Now</button>
-            <button class="btn btn-primary my-5 mx-2 "> Add To Cart</button>
+
+            {% if product.quantity and product.discount > 0 %}
+                <h6 class="card-text mx-3" style="display: inline-block;color:#0004ff">{{product.discount}}% Off</h6>
+            {% endif %}
+
+            <h5 class="my-3"> {{product.color}}</h5>
+            
+            {% if product.category.name in forRam %}
+                <h5> {{product.ram}} | {{product.storage}}</h5>
+            {% endif %}
+
+            <p> {{desc|linebreaks}}</p>
+            
+            <button class="btn btn-primary"> Buy Now</button>
+
+            {% if quantity %}
+                <a class="btn btn-primary mx-3" href="/viewCart">Go To Cart</a>
+            {% else %}
+
+                <a class="btn btn-primary mx-3" href="/addToCart?id={{product.id}}">Add To Cart</a>
+            {% endif %}
+                
         </div>
     </div>
 </div>

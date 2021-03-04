@@ -18,11 +18,12 @@
             <a class="navbar-brand" href="/">Wonder Cart</a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                    {% block filter %} {% endblock %}
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
 
                     {% block search %} {% endblock %}
-              
+                    {% block filter %} {% endblock %}
                 </ul>
 
                 <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
@@ -47,7 +48,7 @@
                         {% endif %}
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Cart</a>
+                        <a class="btn btn-success" aria-current="page" href="#">Cart</a>
                     </li>
                 </ul>
             </div>
@@ -61,7 +62,6 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="logout">Are you sure?</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
@@ -78,9 +78,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="profile">Login to view profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <a href="/accounts/login" class="btn btn-primary">Log In</a>
                 </div>
             </div>
