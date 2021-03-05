@@ -2,9 +2,28 @@
 
 {% block title %}{{product.name}} | Wonder Cart {% endblock %}
 
+
 {% block css %}
+<style>
+    
+    .search{
+        width:600px;
+    }
+</style>
+{% endblock %}
+
+
+{% block search %}
+
+<form  action="/viewProducts/search" class="d-flex mx-2 search">
+
+    <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" aria-label="Search" required>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+
+</form>
 
 {% endblock %}
+
 
 {% block body %}
 
@@ -18,7 +37,7 @@
         <div class="col-md-7 my-2" >
             <h3>{{product.name}}</h3>
 
-            <button class="card-text btn btn-dark btn-sm">₹ {{product.price}}</button>
+            <button class="card-text btn btn-outline-dark btn-sm">₹ {{product.price}}</button>
             
             {% if not product.quantity %}
                 <h6 class="card-text mx-3" style="display: inline-block;color: red;">Out Of Stock</h6>
@@ -37,21 +56,36 @@
             <p> {{desc|linebreaks}}</p>
             
             <button class="btn btn-primary"> Buy Now</button>
-            {% if isInCart and quantity %}
-                <div class="btn-group mx-3" role="group" aria-label="Basic outlined example">
-                    <a class="btn btn-outline-primary" href="/dQuantity?id={{product.id}}">-</a>
-                    <button type="button" class="btn btn-outline-primary">{{quantity}}</button>
-                    <a class="btn btn-outline-primary" href="/iQuantity?id={{product.id}}">+</a>
-                </div>
+
+            {% if quantity %}
+                <a class="btn btn-primary mx-3" href="/viewCart">Go To Cart</a>
             {% else %}
-                <a class="btn btn-primary mx-3" href="/addToCart?id={{product.id}}">Add To Cart</a>
+                
+                {% if user.is_authenticated %}
+                    <a class="btn btn-primary mx-3" aria-current="page" href="/addToCart?id={{product.id}}">Add to Cart</a>
+                {% else %}
+                    <bitton class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#addtocartmodal" aria-current="page">Add to Cart</button>
+                {% endif %}
+
+                <!-- <a class="btn btn-primary mx-3" href="/addToCart?id={{product.id}}">Add To Cart</a> -->
             {% endif %}
                 
-                <!-- <input type="hidden" name="id" value="{{product.id}}"> -->
-            <!-- </form>         -->
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="addtocartmodal" tabindex="-1" aria-labelledby="addtocart" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addtocart">Login to add item in cart</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="/accounts/login" class="btn btn-primary">Log In</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

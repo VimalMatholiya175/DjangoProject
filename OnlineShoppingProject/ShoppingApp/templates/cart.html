@@ -1,0 +1,66 @@
+{% extends 'basicHome.html' %}
+
+
+{% block extra %} {% endblock %}
+
+
+{% block title %}User Cart - Wonder Cart {% endblock %}
+
+
+{% block css %}
+
+<style>
+
+    .center-details{
+        text-align: center;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block body %}
+
+{% if message is None %} 
+
+
+<div class="container">
+
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+        {% for product,quantity in products %}
+        <div class="col">
+            <div class="card h-100">
+                <a href="/viewProducts/viewDetails?id={{product.id}}">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                </a>
+                <div class="card-body">
+        
+                        <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+                            <h6 class="card-title center-details">{{product.name}}</h6>
+                        </a>
+
+                        <h5 class="center-details">₹ {{product.price}}</h5>
+                    
+                </div>
+                <div class="card-footer">
+                    
+                    <div class="btn-group btn-block" role="group" aria-label="Basic outlined example">
+                        <a class="btn btn-outline-dark" href="/changeQty?id={{product.id}}&op=minus">-</a>
+                        <button type="button" class="btn btn-outline-dark">{{quantity}}</button>
+                        <a class="btn btn-outline-dark" href="/changeQty?id={{product.id}}&op=plus">+</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+    
+{% else %}
+    
+<h5>{{message}}</h5>
+    
+{% endif %}
+
+{% endblock %}

@@ -17,7 +17,7 @@
 
 {% block search %}
 
-<form  action="/viewProducts/search" class="d-flex mx-5">
+<form  action="/viewProducts/search" class="d-flex mx-2">
     <input class="form-control me-2" type="text" name="keyword" value="{{keyword}}" placeholder="Search" aria-label="Search" required style="width:600px;">
     <button class="btn btn-outline-success" type="submit">Search</button>
 </form>
@@ -46,7 +46,7 @@
                                     ( {{product.ram}} | {{product.storage}} )
                                 {% endif %}
                             </h6>
-                            <button class="card-text btn btn-dark" style="width: 100%;">₹ {{product.price}}</button>
+                            <button class="card-text btn btn-outline-dark" style="width: 100%;">₹ {{product.price}}</button>
                         </div>
                     </div>
                 </div>

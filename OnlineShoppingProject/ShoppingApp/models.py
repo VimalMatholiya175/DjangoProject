@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 RAM_CHOICES=(('None',None),('2GB','2GB'),('3GB','3GB'),('4GB','4GB'),('6GB','6GB'),('8GB','8GB'),('12Gb','12GB'),('16GB','16GB'),('32GB','32GB'))
@@ -34,3 +36,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
+class Cart(models.Model):
+
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    quantity=models.IntegerField()
+    

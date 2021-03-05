@@ -4,11 +4,9 @@ from . import views
 
 urlpatterns=[
 
-    path('',views.home,name='index'),
+    path('',views.home,name='home'),
     path('addToCart',views.addToCart,name='addToCart'),
-    path('iQuantity',views.iQuantity,name='iQuantity'),
-    path('dQuantity',views.dQuantity,name='dQuantity'),
-
-
+    path('changeQty',views.changeQty,name='changeQty'),
+    path('viewCart',views.viewCart,name='viewCart'),
 
 ]

@@ -33,10 +33,7 @@
     .search{
         width:600px;
     }
-    .filter{
-        margin-left: 150px;
-        color: gray;
-    }
+    
     .center-details{
         text-align: center;
     }
@@ -48,14 +45,14 @@
 
 {% block filter %}
 
-<button class="btn btn-light mx-2 filter" data-bs-toggle="modal" data-bs-target="#filtermodal" aria-current="page">Filter</button>
+<button class="btn btn-outline-success mx-1 filter" data-bs-toggle="modal" data-bs-target="#filtermodal" aria-current="page">Filter</button>
 
 {% endblock %}
 
 
 {% block search %}
 
-<form  action="/viewProducts/search" class="d-flex mx-1 search">
+<form  action="/viewProducts/search" class="d-flex mx-2 search">
 
     <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" aria-label="Search" required>
     <button class="btn btn-outline-success" type="submit">Search</button>
@@ -140,7 +137,7 @@
                             {% endif %}
                         </h6>
     
-                        <button class="card-text btn btn-dark" style="width: 100%;">₹ {{product.price}}</button>
+                        <button class="card-text btn btn-outline-dark" style="width: 100%;">₹ {{product.price}}</button>
                     </div>
                 </div>
             </div>

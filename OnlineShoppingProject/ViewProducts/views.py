@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 
-from ShoppingApp.models import Product,Category
+from ShoppingApp.models import Product,Category,Cart
 # Create your views here.
 
 def viewDetails(request):
@@ -9,24 +9,19 @@ def viewDetails(request):
 	if id==None:
 		return redirect('/')
 
-	product=Product.objects.filter(id=id)
-
-	cart=request.session.get('cart')
+	product=Product.objects.get(id=id)
+	
 	quantity=0
-	if cart :
-		keys=cart.keys()
-		if id in keys:
-			isInCart=True
-			quantity=cart[id]
-		else:
-			isInCart=False
-	else:
-		isInCart=False
 
-	description="• "+product[0].desc
+	if request.user.is_authenticated :
+		cart=Cart.objects.filter(product=product,user=request.user)
+		if cart :
+			quantity=cart[0].quantity
+
+	description="• "+product.desc
 	description=description.replace('\n','\n• ')
 
-	data={'product':product[0],'desc':description,'isInCart':isInCart,'quantity':quantity,'forRam':['Mobile','Laptop']}
+	data={'product':product,'desc':description,'quantity':quantity,'forRam':['Mobile','Laptop']}
 	return render(request,'viewDetails.html', data)
 
 
