@@ -10,11 +10,18 @@ def viewDetails(request):
 		return redirect('/')
 
 	product=Product.objects.get(id=id)
+	
+	quantity=0
+
+	if request.user.is_authenticated :
+		cart=Cart.objects.filter(product=product,user=request.user)
+		if cart :
+			quantity=cart[0].quantity
 
 	description="• "+product.desc
 	description=description.replace('\n','\n• ')
 
-	data={'product':product,'desc':description,'forRam':['Mobile','Laptop']}
+	data={'product':product,'desc':description,'quantity':quantity,'forRam':['Mobile','Laptop']}
 	return render(request,'viewDetails.html', data)
 
 

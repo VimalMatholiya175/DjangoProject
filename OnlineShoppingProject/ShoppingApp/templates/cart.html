@@ -1,0 +1,62 @@
+{% extends 'basicHome.html' %}
+
+
+{% block extra %} {% endblock %}
+
+
+{% block title %}User Cart - Wonder Cart {% endblock %}
+
+
+{% block css %}
+
+<style>
+
+    .center-details{
+        text-align: center;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block body %}
+
+{% if message is None %} 
+
+<!-- <div class="container">
+    <div 
+</div> -->
+
+
+<div class="container">
+
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+        {% for product,quantity in products %}
+        <div class="col">
+            <div class="card h-100">
+                <a href="/viewProducts/viewDetails?id={{product.id}}">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                </a>
+                <div class="card-body">
+        
+                        <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+                            <h6 class="card-title center-details">{{product.name}}</h6>
+                        </a>
+
+                        <h5 class="center-details">₹ {{product.price}}</h5>
+                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+    
+{% else %}
+    
+<h5>{{message}}</h5>
+    
+{% endif %}
+
+{% endblock %}

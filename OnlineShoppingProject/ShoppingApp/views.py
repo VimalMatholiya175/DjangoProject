@@ -47,6 +47,30 @@ def addToCart(request):
 	return redirect('/viewProducts/viewDetails?id='+productId)
 
 
+def viewCart(request):
+
+	if not request.user.is_authenticated:
+		return redirect('/')
+
+	carts=Cart.objects.filter(user=request.user)
+	
+	products=[]
+
+	if carts:
+		for cart in carts:	
+			product=Product.objects.get(id=cart.product.id)
+			quantity=cart.quantity
+			if quantity :
+				products.append((product,quantity))
+
+	if len(products) == 0 :
+		message='Your Cart is Empty'
+	else:
+		message=None
+
+	data={'products':products,'message':message}
+
+	return render(request,'cart.html',data)
 
 		
 
