@@ -1,5 +1,7 @@
 {% extends 'basicHome.html' %}
 
+{% load customFunctions %}
+
 {% block extra %} {% endblock %}
 
 
@@ -80,7 +82,15 @@
                 </div>
                 <div class="col specialOfferDesc">
                     <h3>{{activeProduct.name}}</h3>
-                    <h3>₹ {{activeProduct.price}}</h3>
+                    
+                    <sup>&#x20B9;</sup>
+                    <h3 style="display: inline-block;">
+                        {{activeProduct.price|actualPrice:activeProduct.discount}}
+                    </h3>
+                    {% if activeProduct.discount %}
+                        &nbsp;<s> &#x20B9;{{activeProduct.price}}</s>
+                    {% endif %}
+                    
                     <h5>{{activeProduct.specialOfferDesc|linebreaks}}</h5>
                     <a class="btn btn-dark" href="#">Buy Now</a>
                     <a class="btn btn-dark mx-2" href="/viewProducts/viewDetails?id={{activeProduct.id}}">View Details</a>
@@ -97,7 +107,13 @@
                     <div class="col specialOfferDesc">
 
                         <h3>{{product.name}}</h3>
-                        <h3>₹ {{product.price}}</h3>
+                        <sup>&#x20B9;</sup>
+                        <h3 style="display: inline-block;">
+                            {{product.price|actualPrice:product.discount}}
+                        </h3>
+                        {% if product.discount %}
+                            &nbsp;<s> &#x20B9;{{product.price}}</s>
+                        {% endif %}
                         <h5>{{product.specialOfferDesc|linebreaks}}</h5>
                         <a class="btn btn-dark" href="#">Buy Now</a>
                         <a class="btn btn-dark mx-2" href="/viewProducts/viewDetails?id={{product.id}}">View Details</a>
@@ -134,24 +150,33 @@
 
 
 {% for products in allProducts %}
-<hr style="width: 1300px;margin: 10px 25px">
+<hr style="width: 1300px;margin: 0px 25px">
 <div class="container">
-    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-2">
         {% for product in products %}
         <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
-        <div class="col">
+        <div class="col" style="height: 360px">
             <div class="card h-100">
                 <img src="/media/{{product.image}}" class="card-img-top" />
                 <div class="card-body">
                     <h6 class="card-title center-details">{{product.name}}</h6>
                 
                     <h6 class="card-title center-details">{{product.color}} 
-                        {% if product.category.name in forRam %}
+                        {% if product.category|hasRam %}
                             ( {{product.ram}} | {{product.storage}} )
                         {% endif %}
                     </h6>
-
-                    <button class="card-text btn btn-outline-dark" style="width: 100%;">₹ {{product.price}}</button>
+                </div>
+                <div class="card-footer">
+                    <div class="center-details">
+                        <sup>&#x20B9;</sup>
+                        <h5 style="display: inline-block;">
+                            {{product.price|actualPrice:product.discount}}
+                        </h5>
+                        {%if product.discount %}
+                            &nbsp;<s> &#x20B9;{{product.price}}</s>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

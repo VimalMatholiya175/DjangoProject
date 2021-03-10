@@ -18,10 +18,7 @@ def viewDetails(request):
 		if cart :
 			quantity=cart[0].quantity
 
-	description="• "+product.desc
-	description=description.replace('\n','\n• ')
-
-	data={'product':product,'desc':description,'quantity':quantity,'forRam':['Mobile','Laptop']}
+	data={'product':product,'quantity':quantity}
 	return render(request,'viewDetails.html', data)
 
 
@@ -42,7 +39,7 @@ def displayCategory(request):
 	for product in products:
 		companies.add(product.companyName)
 	
-	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory,'forRam':['Mobile','Laptop'],'message':None}
+	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 	return render(request,'displayCategory.html',data)
 
 
@@ -84,13 +81,8 @@ def xfilter(request):
 			products=Product.objects.order_by('price').filter(category=category)
 
 	allProducts.append(products)
-
-	if len(products)==0 or len(allProducts)==0:
-		message='No Matches were found...'
-	else:
-		message=None
 	
-	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory,'message':message}
+	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 
 	return render(request,'displayCategory.html',data)
 
@@ -130,5 +122,5 @@ def search(request):
 
 		matchedCategories.append(matchedProducts)
 
-	data={'matchedCategories':matchedCategories,'keyword':keyword,'forRam':['Mobile','Laptop']}
+	data={'matchedCategories':matchedCategories,'keyword':keyword}
 	return render(request,'search.html',data)

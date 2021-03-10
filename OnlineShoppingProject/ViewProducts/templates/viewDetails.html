@@ -1,5 +1,7 @@
 {% extends 'basicHome.html' %}
 
+{% load customFunctions %}
+
 {% block title %}{{product.name}} | Wonder Cart {% endblock %}
 
 
@@ -37,37 +39,48 @@
         <div class="col-md-7 my-2" >
             <h3>{{product.name}}</h3>
 
-            <button class="card-text btn btn-outline-dark btn-sm">₹ {{product.price}}</button>
-            
-            {% if not product.quantity %}
-                <h6 class="card-text mx-3" style="display: inline-block;color: red;">Out Of Stock</h6>
-            {% endif %}
+            <div class="center-details">
+                <sup>&#x20B9;</sup>
+                <h4 style="display: inline-block;">
+                    {{product.price|actualPrice:product.discount}}
+                </h4>
+                {% if product.quantity and product.discount %}
+                    &nbsp;<s> &#x20B9;{{product.price}}</s>
+                {% endif %}
+            </div>
 
             {% if product.quantity and product.discount > 0 %}
-                <h6 class="card-text mx-3" style="display: inline-block;color:#0004ff">{{product.discount}}% Off</h6>
+                <h6 class="card-text" style="color:#0004ff">{{product.discount}}% Off</h6>
             {% endif %}
 
             <h5 class="my-3"> {{product.color}}</h5>
             
-            {% if product.category.name in forRam %}
+            {% if product.category|hasRam %}
                 <h5> {{product.ram}} | {{product.storage}}</h5>
             {% endif %}
 
-            <p> {{desc|linebreaks}}</p>
-            
-            <button class="btn btn-primary"> Buy Now</button>
+            <p> {{product.desc|replaceNewLines|linebreaks}}</p>
 
-            {% if quantity %}
-                <a class="btn btn-primary mx-3" href="/viewCart">Go To Cart</a>
+            {% if not product.quantity %}
+
+                <button class="btn btn-danger">Out Of Stock</button>
+            
             {% else %}
-                
-                {% if user.is_authenticated %}
-                    <a class="btn btn-primary mx-3" aria-current="page" href="/addToCart?id={{product.id}}">Add to Cart</a>
+            
+                <button class="btn btn-primary"> Buy Now</button>
+
+                {% if quantity %}
+                    <a class="btn btn-primary mx-3" href="/viewCart">Go To Cart</a>
                 {% else %}
-                    <bitton class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#addtocartmodal" aria-current="page">Add to Cart</button>
+                
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-primary mx-3" aria-current="page" href="/addToCart?id={{product.id}}">Add to Cart</a>
+                    {% else %}
+                        <bitton class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#addtocartmodal" aria-current="page">Add to Cart</button>
+                    {% endif %}
+
                 {% endif %}
 
-                <!-- <a class="btn btn-primary mx-3" href="/addToCart?id={{product.id}}">Add To Cart</a> -->
             {% endif %}
                 
         </div>

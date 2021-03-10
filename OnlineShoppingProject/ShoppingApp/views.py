@@ -19,12 +19,15 @@ def home(request):
 		products=Product.objects.filter(category=category)
 		allProducts.append(products)
 	
-	data={'allProducts':allProducts,'categories':categories,'specialProducts':otherSpecialProducts,'activeProduct':activeProduct,'forRam':['Mobile','Laptop']}
+	data={'allProducts':allProducts,'categories':categories,'specialProducts':otherSpecialProducts,'activeProduct':activeProduct}
 
 	return render(request,'index.html',data)
 
 
 def addToCart(request):
+
+	if not request.user.is_authenticated:
+		return redirect('/')
 
 	productId=request.GET.get('id',None)
 	if not productId:
@@ -47,6 +50,10 @@ def addToCart(request):
 	return redirect('/viewProducts/viewDetails?id='+productId)
 
 def changeQty(request):
+
+	if not request.user.is_authenticated:
+		return redirect('/')
+
 	productId=request.GET.get('id',None)
 
 	op=request.GET.get('op',None)
@@ -86,18 +93,20 @@ def viewCart(request):
 			if quantity :
 				products.append((product,quantity))
 
-	if len(products) == 0 :
-		message='Your Cart is Empty'
-	else:
-		message=None
-
-	data={'products':products,'message':message}
+	data={'products':products}
 
 	return render(request,'cart.html',data)
 
 		
+def removeFromCart(request):
 
+	productId=request.GET.get('id',None)
 
+	if not request.user.is_authenticated or not productId:
+		return redirect('/')
 
-		
+	product=Product.objects.get(id=productId)
+	cart=Cart.objects.filter(product=product,user=request.user.id)
+	cart[0].delete()
 
+	return redirect('/viewCart')
