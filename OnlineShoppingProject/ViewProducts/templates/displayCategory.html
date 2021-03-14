@@ -1,5 +1,6 @@
 {% extends 'basicHome.html' %}
 
+{% load customFunctions %}
 
 {% block extra %} {% endblock %}
 
@@ -116,8 +117,6 @@
 
 </div>
 
-{% if message is None %}
-
 {% for products in allProducts %}
 
 <div class="container">
@@ -125,19 +124,29 @@
         {% for product in products %}
 
         <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
-            <div class="col">
+            <div class="col" style="height: 360px">
                 <div class="card h-100">
                     <img src="/media/{{product.image}}" class="card-img-top" />
                     <div class="card-body">
                         <h6 class="card-title center-details">{{product.name}}</h6>
                     
                         <h6 class="card-title center-details">{{product.color}} 
-                            {% if product.category.name in forRam %}
+                            {% if product.category|hasRam %}
                                 ( {{product.ram}} | {{product.storage}} )
                             {% endif %}
                         </h6>
     
-                        <button class="card-text btn btn-outline-dark" style="width: 100%;">₹ {{product.price}}</button>
+                    </div>
+                    <div class="card-footer">
+                        <div class="center-details">
+                            <sup>&#x20B9;</sup>
+                            <h5 style="display: inline-block;">
+                                {{product.price|actualPrice:product.discount}}
+                            </h5>
+                            {% if product.discount %}
+                                &nbsp;<s> &#x20B9;{{product.price}}</s>
+                            {% endif %}
+                    </div>
                     </div>
                 </div>
             </div>
@@ -147,11 +156,5 @@
     </div>
 </div>
 {% endfor %}
-
-{% else %}
-
-<h6 style="margin:100px 200px;">{{message}}</h6>
-
-{% endif %}
 
 {% endblock %}

@@ -11,17 +11,14 @@ def viewDetails(request):
 
 	product=Product.objects.get(id=id)
 	
-	quantity=0
+	# quantity=0
 
-	if request.user.is_authenticated :
-		cart=Cart.objects.filter(product=product,user=request.user)
-		if cart :
-			quantity=cart[0].quantity
+	# if request.user.is_authenticated :
+	# 	cart=Cart.objects.filter(product=product,user=request.user)
+	# 	if cart :
+	# 		quantity=cart[0].quantity
 
-	description="• "+product.desc
-	description=description.replace('\n','\n• ')
-
-	data={'product':product,'desc':description,'quantity':quantity,'forRam':['Mobile','Laptop']}
+	data={'product':product}
 	return render(request,'viewDetails.html', data)
 
 
@@ -42,7 +39,7 @@ def displayCategory(request):
 	for product in products:
 		companies.add(product.companyName)
 	
-	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory,'forRam':['Mobile','Laptop'],'message':None}
+	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 	return render(request,'displayCategory.html',data)
 
 
@@ -84,13 +81,8 @@ def xfilter(request):
 			products=Product.objects.order_by('price').filter(category=category)
 
 	allProducts.append(products)
-
-	if len(products)==0 or len(allProducts)==0:
-		message='No Matches were found...'
-	else:
-		message=None
 	
-	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory,'message':message}
+	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 
 	return render(request,'displayCategory.html',data)
 
@@ -99,6 +91,10 @@ def search(request):
 	keyword=request.GET.get('keyword',None)
 	if keyword==None:
 		return redirect('/')
+
+	oKeyword=keyword
+	if keyword[len(keyword)-1]=='s':
+		keyword=keyword[:len(keyword)-1]
 	
 	keywords=keyword.split(' ')
 	
@@ -110,25 +106,28 @@ def search(request):
 		products=Product.objects.filter(category=cat)
 		matchedProducts=[]
 		for product in products:
-			if  keyword in product.companyName.lower() or keyword in product.category.name.lower() or keyword in product.category.name.lower()+'s':
+			if keyword==product.name.lower() or keyword == product.companyName.lower() or keyword == product.category.name.lower():
 				matchedProducts.append(product)
-			elif len(keywords) == 2 and keywords[0] in product.companyName.lower() and ( keywords[1] in product.category.name.lower() or keywords[1] in product.category.name.lower()+'s' ):
+			elif len(keywords) == 2 and keywords[0] == product.companyName.lower() and  keywords[1]== product.category.name.lower():
 				matchedProducts.append(product)
-			elif len(keywords) >= 2:
+			elif len(keywords) >= 1:
 				count=0
 				for word in keywords:
 					if word in product.name.lower():
 						count+=1
-					
-				if count>=3:
+				if count>=5:
+					matchedProducts.append(product)
+				elif count>=4:
+					matchedProducts.append(product)
+				elif count>=3:
 					matchedProducts.append(product)
 				elif count>=2:
 					matchedProducts.append(product)
-
+				
 		if len(matchedProducts)==0:
 			continue
 
 		matchedCategories.append(matchedProducts)
 
-	data={'matchedCategories':matchedCategories,'keyword':keyword,'forRam':['Mobile','Laptop']}
+	data={'matchedCategories':matchedCategories,'keyword':oKeyword}
 	return render(request,'search.html',data)

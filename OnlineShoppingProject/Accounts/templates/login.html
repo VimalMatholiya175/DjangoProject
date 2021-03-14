@@ -5,16 +5,17 @@
 
 {% block body %}
 
-    <div class="container" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
+{% for message in messages %}
+    <div class="alert alert-danger alert-dismissible fade show my-1" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00;text-align: center;">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+
+    <div class="container my-3" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
         
         <h3 style="text-align: center;">Log In</h3><br>
-        
-        {% for msg in messages %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00">
-                    {{msg}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>    
-        {% endfor %}
     
         <form action="login" method="post">
             {% csrf_token %}
