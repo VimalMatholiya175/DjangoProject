@@ -1,8 +1,11 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.http import HttpResponse
+from django.views import View
 
+from Accounts.models import Customer
 from .models import Category,Product,Cart
+
 # Create your views here.
 
 def home(request):
@@ -24,20 +27,32 @@ def home(request):
 	return render(request,'index.html',data)
 
 
+def viewCart(request):
+
+	carts=Cart.objects.filter(user=request.user)
+	
+	products=[]
+
+	if carts:
+		for cart in carts:	
+			product=Product.objects.get(id=cart.product.id)
+			quantity=cart.quantity
+			if quantity :
+				products.append((product,quantity))
+			else:
+				cart.delete()
+	data={'products':products}
+
+	return render(request,'cart.html',data)
+
+
 def addToCart(request):
 
-	if not request.user.is_authenticated:
-		return redirect('/')
-
-	productId=request.GET.get('id',None)
-	if not productId:
+	productId=request.GET.get('id')
+	if productId==None:
 		return redirect('/')
 
 	product=Product.objects.get(id=productId)
-
-	if productId is None:
-		return redirect('/')
-
 	cart=Cart.objects.filter(product=product,user=request.user)
 
 	if cart:
@@ -47,12 +62,9 @@ def addToCart(request):
 		cart=Cart(product=product,user=request.user,quantity=1)
 		cart.save()
 
-	return redirect('/viewProducts/viewDetails?id='+productId)
+	return redirect('/viewProducts/productDetails?id='+productId)
 
 def changeQty(request):
-
-	if not request.user.is_authenticated:
-		return redirect('/')
 
 	productId=request.GET.get('id',None)
 
@@ -69,40 +81,22 @@ def changeQty(request):
 		if op=='minus':
 			cart[0].quantity-=1
 		else:
-			cart[0].quantity+=1
+			if product.quantity==cart[0].quantity:
+				messages.info(request,'This product is now out of stock')
+				return redirect('/viewCart')
+			else:
+				cart[0].quantity+=1
 
 		cart[0].save()
 
-
 	return redirect('/viewCart')
-
-
-def viewCart(request):
-
-	if not request.user.is_authenticated:
-		return redirect('/')
-
-	carts=Cart.objects.filter(user=request.user)
-	
-	products=[]
-
-	if carts:
-		for cart in carts:	
-			product=Product.objects.get(id=cart.product.id)
-			quantity=cart.quantity
-			if quantity :
-				products.append((product,quantity))
-
-	data={'products':products}
-
-	return render(request,'cart.html',data)
 
 		
 def removeFromCart(request):
 
 	productId=request.GET.get('id',None)
 
-	if not request.user.is_authenticated or not productId:
+	if not productId:
 		return redirect('/')
 
 	product=Product.objects.get(id=productId)
@@ -110,3 +104,32 @@ def removeFromCart(request):
 	cart[0].delete()
 
 	return redirect('/viewCart')
+
+
+
+class Checkout(View):
+
+	def get(self,request):
+
+		productId=request.GET.get('id')
+		
+		products=[]
+		customer=Customer.objects.get(user_id=request.user.id)
+		if productId:
+			product=Product.objects.get(id=productId)
+			if not product.quantity:
+				return redirect('/')
+			products.append((product,1))
+		
+		else:
+			carts=Cart.objects.filter(user=request.user)
+			if not carts:
+				return redirect('/')
+			for cart in carts:
+				product=Product.objects.get(id=cart.product.id)
+				products.append((product,cart.quantity))
+
+		data={'products':products,'id':productId,'customer':customer}
+		return render(request,'checkout.html',data)
+
+	

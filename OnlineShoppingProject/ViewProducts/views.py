@@ -3,23 +3,18 @@ from django.shortcuts import render,redirect
 from ShoppingApp.models import Product,Category,Cart
 # Create your views here.
 
-def viewDetails(request):
+
+def productDetails(request):
 
 	id=request.GET.get('id',None)
 	if id==None:
 		return redirect('/')
 
 	product=Product.objects.get(id=id)
-	
-	quantity=0
 
-	if request.user.is_authenticated :
-		cart=Cart.objects.filter(product=product,user=request.user)
-		if cart :
-			quantity=cart[0].quantity
+	data={'product':product}
+	return render(request,'productDetails.html', data)
 
-	data={'product':product,'quantity':quantity}
-	return render(request,'viewDetails.html', data)
 
 
 def displayCategory(request):
@@ -41,6 +36,7 @@ def displayCategory(request):
 	
 	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 	return render(request,'displayCategory.html',data)
+
 
 
 def xfilter(request):
@@ -78,7 +74,7 @@ def xfilter(request):
 		if price == 'lth':
 			products=Product.objects.order_by('price').filter(category=category)
 		else:
-			products=Product.objects.order_by('price').filter(category=category)
+			products=Product.objects.order_by('-price').filter(category=category)
 
 	allProducts.append(products)
 	
@@ -87,10 +83,15 @@ def xfilter(request):
 	return render(request,'displayCategory.html',data)
 
 
+
 def search(request):
 	keyword=request.GET.get('keyword',None)
 	if keyword==None:
 		return redirect('/')
+
+	oKeyword=keyword
+	if keyword[len(keyword)-1]=='s':
+		keyword=keyword[:len(keyword)-1]
 	
 	keywords=keyword.split(' ')
 	
@@ -102,25 +103,28 @@ def search(request):
 		products=Product.objects.filter(category=cat)
 		matchedProducts=[]
 		for product in products:
-			if  keyword in product.companyName.lower() or keyword in product.category.name.lower() or keyword in product.category.name.lower()+'s':
+			if keyword==product.name.lower() or keyword == product.companyName.lower() or keyword == product.category.name.lower():
 				matchedProducts.append(product)
-			elif len(keywords) == 2 and keywords[0] in product.companyName.lower() and ( keywords[1] in product.category.name.lower() or keywords[1] in product.category.name.lower()+'s' ):
+			elif len(keywords) == 2 and keywords[0] == product.companyName.lower() and  keywords[1]== product.category.name.lower():
 				matchedProducts.append(product)
-			elif len(keywords) >= 2:
+			elif len(keywords) >= 1:
 				count=0
 				for word in keywords:
 					if word in product.name.lower():
 						count+=1
-					
-				if count>=3:
+				if count>=5:
+					matchedProducts.append(product)
+				elif count>=4:
+					matchedProducts.append(product)
+				elif count>=3:
 					matchedProducts.append(product)
 				elif count>=2:
 					matchedProducts.append(product)
-
+				
 		if len(matchedProducts)==0:
 			continue
 
 		matchedCategories.append(matchedProducts)
 
-	data={'matchedCategories':matchedCategories,'keyword':keyword}
+	data={'matchedCategories':matchedCategories,'keyword':oKeyword}
 	return render(request,'search.html',data)

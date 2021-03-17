@@ -1,53 +1,53 @@
 {% extends 'basicAccounts.html' %}
 
-{% block title %} Sign Up | Wonder Cart {% endblock %}
+{% block title %} Sign Up {% endblock %}
 
 
 {% block body %}
 
-    <div class="container" style="width:400px;border:2px solid #f4ebeb;padding:30px;">
+    <div class="container my-4 p-5 border" style="width:400px;">
         
-        <h3 style="text-align: center;">Sign Up</h3><br>
-
-        {% for msg in messages %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00">
-                    {{msg}}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>    
-        {% endfor %}
+        <h3 class="text-center">Sign Up</h3><br>
 
         <form action="signup" method="post">
             {% csrf_token %}
-            <div class="mb-3">
-                <input type="text" class="form-control"  name="firstname" placeholder="First name" pattern="[A-Za-z]+" required>
+            
+            <div class="mb-2">
+                <label for="firstname" class="form-label">First Name</label>
+                <input type="text" class="form-control"  name="firstname" id="firstname" pattern="[A-Za-z]+" required>
             </div>
-            <div class="mb-3">
-                <input type="text" class="form-control"  name="lastname" placeholder="Last name" pattern="[A-Za-z]+" required>
+            <div class="mb-2">
+                <label for="lastname" class="form-label">Last Name</label>
+                <input type="text" class="form-control"  name="lastname" id="lastname" pattern="[A-Za-z]+" required>
             </div>
-            <div class="mb-3">
-                <input type="text" class="form-control"  name="username" placeholder="Username" pattern="[a-z0-9]+" required>
+            <div class="mb-2">
+                <label for="username" class="form-label">Userame</label>
+                <input type="text" class="form-control"  name="username" id="username" pattern="^[a-z]+[0-9]*$" required>
             </div>
-            <div class="mb-3">
-                <input type="email" class="form-control" name="email"  placeholder="Email" required>
+            <div class="mb-2">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" name="email" id="email" required>
             </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="password" placeholder="Password" minlength="6" required>
+            <div class="mb-2">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password" minlength="6" required>
             </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="confirmpassword" placeholder="Confirm Password" minlength="6" required>
+            <div class="mb-2">
+                <label for="cpassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" name="confirmpassword" id="cpassword" 
+                 minlength="6" required> 
             </div>
-            <div class="mb-3">
-                <input type="tel" class="form-control" name="mobileno" placeholder="Mobile No." pattern="[0-9]{10}" required>
+            <div class="mb-2">
+                <label for="mobileno" class="form-label">Mobile No.</label>
+                <input type="tel" class="form-control" name="mobileno" id="mobileno" pattern="[0-9]{10}" required>
             </div>
-            <div class="mb-3">
-                <input type="text" class="form-control" name="address" placeholder="Address" maxlength="50" required>
-            </div>
-            <input type="submit"  value="SignUp" class="btn btn-primary" style="width: 100%;">
-            <input type="reset"  class="btn btn-primary my-3" style="width: 100%;">
+
+            <input type="reset"  class="btn btn-primary mt-2 w-100">
+            <input type="submit"  value="SignUp" class="btn btn-primary mt-2 w-100">
+            
             
         </form>
           
-
     </div>
 
 {% endblock %}

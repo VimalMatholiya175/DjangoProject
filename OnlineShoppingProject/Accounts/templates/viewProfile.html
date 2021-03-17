@@ -1,6 +1,6 @@
 {% extends 'basicAccounts.html' %}
 
-{% block title %}User Profile | Wonder Cart{% endblock %}
+{% block title %}Your Profile{% endblock %}
 
 {% block css %}
 
@@ -8,10 +8,18 @@
     
 {% endblock %}
 
+{% block logout %}
+    
+    <li class="nav-item">
+        <a class="nav-link active mx-3" aria-current="page" href="/logout">Logout</a>
+    </li>
 
+{% endblock %}
+                       
+                    
 {% block body %}
 
-<div class="container my-2">
+<div class="container my-3">
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -20,7 +28,6 @@
             <div class="panel-body">
                 <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
                     <img alt="Profile Photo" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">
-
 
                 </div>
                 <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
@@ -47,7 +54,7 @@
                         <div class="form-group row">
                             <label for="username" class="col-sm-2 col-form-label">Username</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="username" id="username" value="{{user.username}}" pattern="[a-z0-9]+" required>
+                                <input type="text" class="form-control" name="username" id="username" value="{{user.username}}" pattern="^[a-z]+[0-9]*$" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -56,12 +63,7 @@
                                 <input type="tel" class="form-control" name="mobileno" id="mobileno" value="{{customer.mobileNo}}" pattern="[0-9]{10}" required>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="address" class="col-sm-2 col-form-label">Address</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address"  name="address" value="{{customer.address}}" maxlength="50" required>
-                            </div>
-                        </div>
+                        
                         <input type="submit"  value="Update Profile" class="btn btn-primary" style="margin-left:125px;">
                         <a href="resetPassword" class="btn btn-primary">Reset Password</a>
                     </form>

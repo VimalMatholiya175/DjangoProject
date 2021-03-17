@@ -1,12 +1,8 @@
 {% extends 'basicHome.html' %}
 
-{% load customFunctions %}
-
-{% block extra %} {% endblock %}
-
+{% load filters %}
 
 {% block title %} Wonder Cart {% endblock %}
-
 
 {% block css %}
 
@@ -33,10 +29,6 @@
 
     .search{
         width:600px;
-    }
-    
-    .center-details{
-        text-align: center;
     }
     
 </style>
@@ -108,8 +100,8 @@
         {% for category in categories %}
             <div class="col">
                 <a href="/viewProducts/displayCategory?cat={{category.name}}">
-                    <img src="/media/{{category.image}}" alt="..." class="center-block">
-                    <h6 style="text-align: center;">{{category.name}}</h6>
+                    <img src="/media/{{category.image}}" class="center-block">
+                    <h6 class="text-center">{{category.name}}</h6>
                 </a>
             </div>
         {% endfor %}
@@ -123,14 +115,14 @@
     <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
         {% for product in products %}
 
-        <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+        <a href="/viewProducts/productDetails?id={{product.id}}" style="text-decoration: none;color:black">
             <div class="col" style="height: 360px">
                 <div class="card h-100">
                     <img src="/media/{{product.image}}" class="card-img-top" />
                     <div class="card-body">
-                        <h6 class="card-title center-details">{{product.name}}</h6>
+                        <h6 class="card-title text-center">{{product.name}}</h6>
                     
-                        <h6 class="card-title center-details">{{product.color}} 
+                        <h6 class="card-title text-center">{{product.color}} 
                             {% if product.category|hasRam %}
                                 ( {{product.ram}} | {{product.storage}} )
                             {% endif %}
@@ -138,10 +130,10 @@
     
                     </div>
                     <div class="card-footer">
-                        <div class="center-details">
+                        <div class="text-center">
                             <sup>&#x20B9;</sup>
-                            <h5 style="display: inline-block;">
-                                {{product.price|actualPrice:product.discount}}
+                            <h5 class="d-inline-block">
+                                {{product|actualPrice}}
                             </h5>
                             {% if product.discount %}
                                 &nbsp;<s> &#x20B9;{{product.price}}</s>

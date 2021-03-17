@@ -1,12 +1,8 @@
 {% extends 'basicHome.html' %}
 
-{% load customFunctions %}
-
-{% block extra %} {% endblock %}
-
+{% load filters %}
 
 {% block title %} Wonder Cart {% endblock %}
-
 
 {% block css %}
 
@@ -44,9 +40,6 @@
     .search{
         width:600px;
     }
-    .center-details{
-        text-align: center;
-    }
 </style>
 
 {% endblock %}
@@ -63,7 +56,7 @@
 
 
 {% block body %}
-<div id="specialProducts" class="carousel slide align-items-center specialProducts" data-bs-ride="carousel" >
+<div id="specialProducts" class="carousel slide specialProducts" data-bs-ride="carousel" >
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#specialProducts" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 0"></button>
         
@@ -78,22 +71,21 @@
         <div class="carousel-item active">
             <div class="row">
                 <div class="col align-items-center">
-                    <img src="/media/{{activeProduct.image}}" class="d-block w-100"  alt="...">
+                    <img src="/media/{{activeProduct.image}}" class="d-block w-100">
                 </div>
                 <div class="col specialOfferDesc">
                     <h3>{{activeProduct.name}}</h3>
                     
                     <sup>&#x20B9;</sup>
-                    <h3 style="display: inline-block;">
-                        {{activeProduct.price|actualPrice:activeProduct.discount}}
-                    </h3>
+                    <h3 class="d-inline-block">{{activeProduct|actualPrice}}</h3>
                     {% if activeProduct.discount %}
                         &nbsp;<s> &#x20B9;{{activeProduct.price}}</s>
                     {% endif %}
                     
                     <h5>{{activeProduct.specialOfferDesc|linebreaks}}</h5>
-                    <a class="btn btn-dark" href="#">Buy Now</a>
-                    <a class="btn btn-dark mx-2" href="/viewProducts/viewDetails?id={{activeProduct.id}}">View Details</a>
+                    <a class="btn btn-dark" href="/checkout?id={{activeProduct.id}}">Buy Now</a>
+
+                    <a class="btn btn-dark mx-2" href="/viewProducts/productDetails?id={{activeProduct.id}}">View Details</a>
                 </div>
             </div>
         </div>
@@ -102,21 +94,19 @@
             <div class="carousel-item">
                 <div class="row">
                     <div class="col align-items-center">
-                        <img src="/media/{{product.image}}" alt="...">
+                        <img src="/media/{{product.image}}">
                     </div>
                     <div class="col specialOfferDesc">
 
                         <h3>{{product.name}}</h3>
                         <sup>&#x20B9;</sup>
-                        <h3 style="display: inline-block;">
-                            {{product.price|actualPrice:product.discount}}
-                        </h3>
+                        <h3 class="d-inline-block">{{product|actualPrice}}</h3>
                         {% if product.discount %}
                             &nbsp;<s> &#x20B9;{{product.price}}</s>
                         {% endif %}
                         <h5>{{product.specialOfferDesc|linebreaks}}</h5>
-                        <a class="btn btn-dark" href="#">Buy Now</a>
-                        <a class="btn btn-dark mx-2" href="/viewProducts/viewDetails?id={{product.id}}">View Details</a>
+                        <a class="btn btn-dark" href="/checkout?id={{product.id}}">Buy Now</a>
+                        <a class="btn btn-dark mx-2" href="/viewProducts/productDetails?id={{product.id}}">View Details</a>
                     </div>
                 </div>
             </div>
@@ -140,7 +130,7 @@
             <div class="col">
                 <a href="/viewProducts/displayCategory?cat={{category.name}}">
                     <img src="/media/{{category.image}}" alt="..." class="center-block">
-                    <h6 style="text-align: center;">{{category.name}}</h6>
+                    <h6 class="text-center">{{category.name}}</h6>
                 </a>
             </div>
         {% endfor %}
@@ -150,29 +140,29 @@
 
 
 {% for products in allProducts %}
+
 <hr style="width: 1300px;margin: 0px 25px">
+
 <div class="container">
     <div class="row row-cols-1 row-cols-md-5 g-4 my-2">
         {% for product in products %}
-        <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
+        <a href="/viewProducts/productDetails?id={{product.id}}" style="text-decoration: none;color:black">
         <div class="col" style="height: 360px">
             <div class="card h-100">
                 <img src="/media/{{product.image}}" class="card-img-top" />
                 <div class="card-body">
-                    <h6 class="card-title center-details">{{product.name}}</h6>
+                    <h6 class="card-title text-center">{{product.name}}</h6>
                 
-                    <h6 class="card-title center-details">{{product.color}} 
+                    <h6 class="card-title text-center">{{product.color}} 
                         {% if product.category|hasRam %}
                             ( {{product.ram}} | {{product.storage}} )
                         {% endif %}
                     </h6>
                 </div>
                 <div class="card-footer">
-                    <div class="center-details">
+                    <div class="text-center">
                         <sup>&#x20B9;</sup>
-                        <h5 style="display: inline-block;">
-                            {{product.price|actualPrice:product.discount}}
-                        </h5>
+                        <h5 class="d-inline-block">{{product|actualPrice}}</h5>
                         {%if product.discount %}
                             &nbsp;<s> &#x20B9;{{product.price}}</s>
                         {% endif %}
@@ -183,6 +173,9 @@
         </a>
         {% endfor %}
     </div>
+
 </div>
+
 {% endfor %}
+
 {% endblock %}
