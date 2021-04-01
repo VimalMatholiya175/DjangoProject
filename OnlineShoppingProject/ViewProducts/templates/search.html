@@ -19,34 +19,18 @@
 {% if matchedCategories|length > 0 %}
 
     {% for category in matchedCategories %}
-
     <div class="container">
         <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
             {% for product in category %}
-            <a href="/viewProducts/productDetails?id={{product.id}}" style="text-decoration: none;color:black">
-                <div class="col" style="height: 360px">
+            <a href="/viewProducts/productDetails/{{product.id}}" class="text-dark" style="text-decoration: none;">
+                <div class="col" style="height: 320px">
                     <div class="card h-100">
                         <img src="/media/{{product.image}}" class="card-img-top" />
                         <div class="card-body">
-                        
-                            <h6 class="card-title text-center">{{product.name}}</h6>
-                            <h6 class="card-title text-center">{{product.color}} 
-                                {% if product.category|hasRam %}
-                                    ( {{product.ram}} | {{product.storage}} )
-                                {% endif %}
-                            </h6>
-                            
-                        </div>
-                        <div class="card-footer">
-                            <div class="text-center">
-                                <sup>&#x20B9;</sup>
-                                <h5 class="d-inline-block">
-                                    {{product|actualPrice}}
-                                </h5>
-                                {% if product.discount %}
-                                    &nbsp;<s> &#x20B9;{{product.price}}</s>
-                                {% endif %}
-                            </div>
+                            <h6>{{product.name}}</h6>
+                            <sup>&#x20B9;</sup>
+                            <h5 class="d-inline-block">{{product|actualPrice}}</h5>
+                            {% if product.discount %} <s>{{product.price}}</s> {% endif %}
                         </div>
                     </div>
                 </div>
@@ -54,13 +38,12 @@
             {% endfor %}
         </div>
     </div>
-
     {% endfor %}
 
 {% else %}
 
 <div class="d-flex justify-content-center" style="background-color:#eee8e8">
-    <img src="/media/images/no_result.gif" alt="dfjdsf">
+    <img src="/media/images/no_result.gif">
 </div>
 
 {% endif %}

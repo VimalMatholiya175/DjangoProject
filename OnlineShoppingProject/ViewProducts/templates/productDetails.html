@@ -4,21 +4,12 @@
 
 {% block title %} {{product.name}} {% endblock %}
 
-{% block css %}
-<style>
-    .search{
-        width:600px;
-    }
-</style>
-{% endblock %}
-
 
 {% block search %}
 
-<form  action="/viewProducts/search" class="d-flex mx-2 search">
+<form  action="/viewProducts/search" class="d-flex mx-2 search" style="width: 600px;">
 
-    <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" 
-    aria-label="Search" required>
+    <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" aria-label="Search" required>
     <button class="btn btn-outline-success" type="submit">Search</button>
 
 </form>
@@ -36,21 +27,14 @@
             </div>
         </div>
         <div class="col-md-7 my-2" >
+
             <h3>{{product.name}}</h3>
-
-            <div>
-
-                <sup>&#x20B9;</sup>
-                <h4 class="d-inline-block">{{product|actualPrice}}</h4>
-                
-                {% if product.quantity and product.discount %}
-                     <s> &#x20B9;{{product.price}}</s>
-                {% endif %}
-            
-            </div>
+            <sup>&#x20B9;</sup>
+            <h4 class="d-inline-block">{{product|actualPrice}}</h4>    
+            {% if product.quantity and product.discount %} <s>{{product.price}}</s> {% endif %}
 
             {% if product.quantity and product.discount > 0 %}
-                <h6 class="card-text text-success">{{product.discount}}% Off</h6>
+                <span class="text-success mx-3">{{product.discount}}% Off</span>
             {% endif %}
 
             <h5 class="my-3"> {{product.color}}</h5>
@@ -60,23 +44,17 @@
             {% endif %}
 
             <p>{{product.desc|replaceNewLines|linebreaks}}</p>
-            • Delivery in {{product.deliveryDays}} Days | <span style="color: green;"> Free</span> 
-            
-            <br>
-            
+            • Delivery in {{product.deliveryDays}} Days | <span class="text-success"> Free</span><br>
             • Return Policy: {{product.returnPolicy}}<br>
             
             {% if not product.quantity %}
-
                 <button class="btn btn-danger my-2">Out Of Stock</button>
-            
             {% else %}
             
-                <a type="submit" class="btn btn-primary my-2" href="/checkout?id={{product.id}}"> Buy Now </a>
-                
+                <a class="btn btn-primary my-2" href="/checkout?id={{product.id}}"> Buy Now </a>
                 {% if user.is_authenticated %}
 
-                    {% if product|isProductInCart:user %}
+                    {% if product|isInCart:user %}
                         <a class="btn btn-primary mx-2" href="/viewCart">Go To Cart</a>
                     {% else %}
                         <a class="btn btn-primary mx-2" href="/addToCart?id={{product.id}}">Add to Cart</a>
@@ -86,8 +64,7 @@
                      <a class="btn btn-primary mx-2" href="/addToCart?id={{product.id}}">Add to Cart</a>
                 {% endif %}      
 
-            {% endif %}
-                
+            {% endif %}         
         </div>
     </div>
 </div>

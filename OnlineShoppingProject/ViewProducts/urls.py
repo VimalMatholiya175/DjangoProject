@@ -5,9 +5,8 @@ from . import views
 urlpatterns = [
     
     path('search',views.search,name='search'),
-    path('xfilter',views.xfilter,name='xfilter'),
-    path('productDetails',views.productDetails,name='productDetails'),
-    path('displayCategory',views.displayCategory,name='displayCategory'),
-
+    path('afilter/<str:selectedCategory>',views.afilter,name='afilter'),
+    path('productDetails/<int:id>',views.productDetails,name='productDetails'),
+    # path('displayCategory/<str:selectedCategory>',views.displayCategory,name='displayCategory'),
 
 ]

@@ -5,18 +5,18 @@
 {% block css %}
 
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    
+
 {% endblock %}
 
 {% block logout %}
-    
-    <li class="nav-item">
-        <a class="nav-link active mx-3" aria-current="page" href="/logout">Logout</a>
-    </li>
+
+<li class="nav-item">
+    <a class="nav-link active mx-3" aria-current="page" href="/logout">Logout</a>
+</li>
 
 {% endblock %}
-                       
-                    
+
+
 {% block body %}
 
 <div class="container my-3">
@@ -28,7 +28,6 @@
             <div class="panel-body">
                 <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4">
                     <img alt="Profile Photo" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">
-
                 </div>
                 <div class="col-md-8 col-xs-12 col-sm-6 col-lg-8">
                     <form action="viewProfile" method="POST">
@@ -63,9 +62,8 @@
                                 <input type="tel" class="form-control" name="mobileno" id="mobileno" value="{{customer.mobileNo}}" pattern="[0-9]{10}" required>
                             </div>
                         </div>
-                        
-                        <input type="submit"  value="Update Profile" class="btn btn-primary" style="margin-left:125px;">
-                        <a href="resetPassword" class="btn btn-primary">Reset Password</a>
+
+                        <input type="submit" value="Update Profile" class="btn btn-primary" style="margin-left:125px;">
                     </form>
                     <hr>
 

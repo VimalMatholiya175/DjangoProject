@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from datetime import datetime
 # Create your models here.
 
 
@@ -56,3 +57,17 @@ class Cart(models.Model):
         return self.product.name
 
 
+class Order(models.Model):
+
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    name=models.CharField(max_length=30)
+    mobileNo=models.BigIntegerField()
+    quantity=models.IntegerField()
+    orderDate=models.DateField(default=datetime.today)
+    address=models.TextField(max_length=250)
+    city=models.CharField(max_length=20)
+    state=models.CharField(max_length=20)
+    pincode=models.CharField(max_length=6)
+    orderStatus=models.BooleanField(default=0)
+    deliverDate=models.DateField(null=True,blank=True)

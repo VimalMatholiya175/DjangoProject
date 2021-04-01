@@ -4,25 +4,23 @@ from django.http import HttpResponse
 from django.views import View
 
 from Accounts.models import Customer
-from .models import Category,Product,Cart
+from .models import Category,Product,Cart,Order
 
 # Create your views here.
 
 def home(request):
-
-	categories=Category.objects.all()
 
 	specialProducts=Product.objects.filter(specialOffer=True)
 	activeProduct=specialProducts[0]
 	otherSpecialProducts=specialProducts[1:]
 
 	allProducts=[]
-
+	categories=Category.objects.all()
 	for category in categories:
 		products=Product.objects.filter(category=category)
 		allProducts.append(products)
 	
-	data={'allProducts':allProducts,'categories':categories,'specialProducts':otherSpecialProducts,'activeProduct':activeProduct}
+	data={'allProducts':allProducts,'specialProducts':otherSpecialProducts,'activeProduct':activeProduct}
 
 	return render(request,'index.html',data)
 
@@ -32,7 +30,6 @@ def viewCart(request):
 	carts=Cart.objects.filter(user=request.user)
 	
 	products=[]
-
 	if carts:
 		for cart in carts:	
 			product=Product.objects.get(id=cart.product.id)
@@ -62,13 +59,9 @@ def addToCart(request):
 		cart=Cart(product=product,user=request.user,quantity=1)
 		cart.save()
 
-	return redirect('/viewProducts/productDetails?id='+productId)
+	return redirect('/viewProducts/productDetails/'+productId)
 
-def changeQty(request):
-
-	productId=request.GET.get('id',None)
-
-	op=request.GET.get('op',None)
+def changeQty(request,productId,op):
 
 	if productId is None or op is None:
 		return redirect('/')
@@ -92,15 +85,13 @@ def changeQty(request):
 	return redirect('/viewCart')
 
 		
-def removeFromCart(request):
-
-	productId=request.GET.get('id',None)
+def removeFromCart(request,productId):
 
 	if not productId:
 		return redirect('/')
 
 	product=Product.objects.get(id=productId)
-	cart=Cart.objects.filter(product=product,user=request.user.id)
+	cart=Cart.objects.filter(product=product,user=request.user)
 	cart[0].delete()
 
 	return redirect('/viewCart')
@@ -112,6 +103,7 @@ class Checkout(View):
 	def get(self,request):
 
 		productId=request.GET.get('id')
+		status=request.GET.get('status')
 		
 		products=[]
 		customer=Customer.objects.get(user_id=request.user.id)
@@ -129,7 +121,58 @@ class Checkout(View):
 				product=Product.objects.get(id=cart.product.id)
 				products.append((product,cart.quantity))
 
-		data={'products':products,'id':productId,'customer':customer}
+		data={'products':products,'id':productId,'customer':customer,'status':status}
 		return render(request,'checkout.html',data)
 
-	
+	def post(self,request):
+
+		firstname=request.POST.get('firstname')
+		lastname=request.POST.get('lastname')
+		mobileNo=request.POST.get('mobileno')
+		pincode=request.POST.get('pincode')
+		city=request.POST.get('city')
+		state=request.POST.get('state')
+		address=request.POST.get('address')
+
+		if request.POST.get('save')=='True':
+			customer=Customer.objects.get(user_id=request.user.id)
+			customer.pincode=pincode
+			customer.mobileNo=mobileNo
+			customer.city=city
+			customer.state=state
+			customer.address=address
+			customer.save()
+			request.user.first_name=firstname
+			request.user.last_name=lastname
+			request.user.save()
+
+		productId=request.POST.get('id')
+
+		if productId != 'None':
+			product=Product.objects.get(id=productId)
+			product.quantity-=1
+			product.save()
+			order=Order(product=product,user=request.user,quantity=1,name=firstname+' '+lastname,mobileNo=mobileNo,pincode=pincode,city=city,state=state,address=address)
+			order.save()
+	 	
+		else:
+			carts=Cart.objects.filter(user=request.user)
+			for cart in carts:
+				cart.product.quantity-=cart.quantity
+				cart.product.save()
+				order=Order(product=cart.product,user=cart.user,quantity=cart.quantity,name=firstname+' '+lastname,mobileNo=mobileNo,pincode=pincode,city=city,state=state,address=address)
+				order.save()
+				cart.delete()
+		
+		return redirect('/orders')
+
+
+
+def orders(request):
+
+	if request.method=='GET':
+
+		orders=Order.objects.filter(user=request.user).order_by('-orderDate')
+
+		data={'orders':orders}
+		return render(request,'orders.html',data)

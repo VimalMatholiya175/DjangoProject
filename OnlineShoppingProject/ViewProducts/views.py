@@ -4,9 +4,8 @@ from ShoppingApp.models import Product,Category,Cart
 # Create your views here.
 
 
-def productDetails(request):
+def productDetails(request,id):
 
-	id=request.GET.get('id',None)
 	if id==None:
 		return redirect('/')
 
@@ -17,57 +16,29 @@ def productDetails(request):
 
 
 
-def displayCategory(request):
+def afilter(request,selectedCategory):
 
-	selectedCategory=request.GET.get('cat',None)
-	if selectedCategory==None:
+	price=request.GET.get('price')
+	company=request.GET.get('company')
+	
+	if not selectedCategory:
 		return redirect('/')
 
-	categories=Category.objects.all()
-	category=Category.objects.get(name=selectedCategory)
 	allProducts=[]
-	products=Product.objects.filter(category=category)
-	allProducts.append(products)
 
-	companies=set()
-
-	for product in products:
-		companies.add(product.companyName)
-	
-	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
-	return render(request,'displayCategory.html',data)
-
-
-
-def xfilter(request):
-
-	price=request.GET.get('price',None)
-	company=request.GET.get('company',None)
-	selectedCategory=request.GET.get('cat',None)
-	
-	if selectedCategory==None:
-		return redirect('/')
-
-	if price==None and company==None:
-		return redirect('/viewProducts/displayCategory?cat='+selectedCategory)
-
-	categories=Category.objects.all()
 	category=Category.objects.get(name=selectedCategory)
 	products=Product.objects.filter(category=category)
-
 	companies=set()
 	for product in products:
 		companies.add(product.companyName)
 
-	allProducts=[] 
-	
-	if price != None and company != None:
+	if price and company:
 		if price=='lth':
 			products=Product.objects.order_by('price').filter(category=category,companyName=company)
 		else:
 			products=Product.objects.order_by('-price').filter(category=category,companyName=company)
 
-	elif price==None and company!=None:
+	elif not price and company:
 		products=Product.objects.filter(category=category,companyName=company)
 	
 	else:
@@ -78,9 +49,9 @@ def xfilter(request):
 
 	allProducts.append(products)
 	
-	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
+	data={'allProducts':allProducts,'category':selectedCategory,'companies':companies}
 
-	return render(request,'displayCategory.html',data)
+	return render(request,'afilter.html',data)
 
 
 
