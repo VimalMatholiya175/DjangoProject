@@ -1,0 +1,95 @@
+{% extends 'basicHome.html' %}
+
+{% load filters %}
+
+{% block title %} {{product.name}} {% endblock %}
+
+{% block css %}
+<style>
+    .search{
+        width:600px;
+    }
+</style>
+{% endblock %}
+
+
+{% block search %}
+
+<form  action="/viewProducts/search" class="d-flex mx-2 search">
+
+    <input class="form-control me-2" type="text" name="keyword"  placeholder="Search" 
+    aria-label="Search" required>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+
+</form>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-5 my-2">
+            <div class="row">
+                <img src="/media//{{product.image}}" width="300px" height="380px">
+            </div>
+        </div>
+        <div class="col-md-7 my-2" >
+            <h3>{{product.name}}</h3>
+
+            <div>
+
+                <sup>&#x20B9;</sup>
+                <h4 class="d-inline-block">{{product|actualPrice}}</h4>
+                
+                {% if product.quantity and product.discount %}
+                     <s> &#x20B9;{{product.price}}</s>
+                {% endif %}
+            
+            </div>
+
+            {% if product.quantity and product.discount > 0 %}
+                <h6 class="card-text text-success">{{product.discount}}% Off</h6>
+            {% endif %}
+
+            <h5 class="my-3"> {{product.color}}</h5>
+            
+            {% if product.category|hasRam %}
+                <h5> {{product.ram}} | {{product.storage}}</h5>
+            {% endif %}
+
+            <p>{{product.desc|replaceNewLines|linebreaks}}</p>
+            • Delivery in {{product.deliveryDays}} Days | <span style="color: green;"> Free</span> 
+            
+            <br>
+            
+            • Return Policy: {{product.returnPolicy}}<br>
+            
+            {% if not product.quantity %}
+
+                <button class="btn btn-danger my-2">Out Of Stock</button>
+            
+            {% else %}
+            
+                <a type="submit" class="btn btn-primary my-2" href="/checkout?id={{product.id}}"> Buy Now </a>
+                
+                {% if user.is_authenticated %}
+
+                    {% if product|isProductInCart:user %}
+                        <a class="btn btn-primary mx-2" href="/viewCart">Go To Cart</a>
+                    {% else %}
+                        <a class="btn btn-primary mx-2" href="/addToCart?id={{product.id}}">Add to Cart</a>
+                    {% endif %} 
+
+                {% else %}
+                     <a class="btn btn-primary mx-2" href="/addToCart?id={{product.id}}">Add to Cart</a>
+                {% endif %}      
+
+            {% endif %}
+                
+        </div>
+    </div>
+</div>
+
+{% endblock %}

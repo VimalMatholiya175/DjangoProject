@@ -1,103 +1,80 @@
 {% extends 'basicHome.html' %}
 
-{% load customFunctions %}
+{% load filters %}
 
-{% block extra %} {% endblock %}
-
-
-{% block title %}User Cart - Wonder Cart {% endblock %}
-
-
-{% block css %}
-
-<style>
-    
-    .center-details{
-        text-align: center;
-    }
-
-</style>
-
-{% endblock %}
-
+{% block title %}Your Cart{% endblock %}
 
 {% block body %}
 
-
-{% if products|length > 0 %} 
+{% if products|length > 0 %}
 
 {% for message in messages %}
-    <div class="alert alert-danger alert-dismissible fade show my-1" role="alert" style="color: #fff;background-color: #f94949;border-color: #f00;text-align: center;">
-        {{message}}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert alert-danger alert-dismissible fade show my-1 text-center text-white" role="alert"
+    style="background-color: #f94949">
+    {{message}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
 <div class="container">
 
-    <nav class="navbar navbar-light bg-light mt-5">
-        <div class="container-fluid">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <h2 class="navbar-brand">Total Amount :<strong> &#x20B9; </strong>  {{products|totalAmount:user}}</h2>
-            </ul>
+    <div class="mt-5 border rounded-3 p-3">
+        <h5 class="d-inline-block">Total Amount :<strong> &#x20B9; </strong> {{products|actualAmount}}</h5>
 
-            <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
-                <a class="btn btn-primary" href="#">Place Order</a>
-            </ul>
+        <a class="btn btn-primary float-end" href="/checkout">Place Order</a>
 
-        </div>
-    </nav>
+    </div>
 
-    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
-        {% for product,quantity in products %}
-        <div class="col" style="height: 360px">
-            <div class="card h-100">
-                <a href="/viewProducts/viewDetails?id={{product.id}}">
-                    <img src="/media/{{product.image}}" class="card-img-top" />
-                </a>
-                <div class="card-body">
-        
-                    <a href="/viewProducts/viewDetails?id={{product.id}}" style="text-decoration: none;color:black">
-                    <h6 class="card-title center-details">{{product.name}}</h6>
+<div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+    {% for product,quantity in products %}
+    <div class="col" style="height: 360px">
+        <div class="card h-100">
+            <a href="/viewProducts/productDetails?id={{product.id}}">
+                <img src="/media/{{product.image}}" class="card-img-top" />
+            </a>
+            <div class="card-body">
 
-                    <div class="center-details">
+                <a href="/viewProducts/productDetails?id={{product.id}}" style="text-decoration: none;color:black">
+                    <h6 class="card-title text-center">{{product.name}}</h6>
+
+                    <div class="text-center">
                         <sup>&#x20B9;</sup>
-                        <h5 style="display: inline-block;">
-                            {{product.price|actualPrice:product.discount}}
+                        <h5 class="d-inline-block">
+                            {{product|actualPrice}}
                         </h5>
                         {% if product.discount %}
-                            &nbsp;<s> &#x20B9;{{product.price}}</s>
+                        &nbsp;<s> &#x20B9;{{product.price}}</s>
                         {% endif %}
                     </div>
-                    </a>
-                    
+                </a>
+
+            </div>
+            <div class="card-footer">
+
+                <div class="btn-group btn-block float-strat" role="group" aria-label="Basic outlined example">
+                    <a class="btn btn-outline-dark btn-sm" href="/changeQty?id={{product.id}}&op=minus">-</a>
+                    <button type="button" class="btn btn-outline-dark btn-sm">{{quantity}}</button>
+                    <a class="btn btn-outline-dark btn-sm" href="/changeQty?id={{product.id}}&op=plus">+</a>
                 </div>
-                <div class="card-footer">
-                    
-                    <div class="btn-group btn-block" role="group" aria-label="Basic outlined example" style="float:left;">
-                        <a class="btn btn-outline-dark btn-sm" href="/changeQty?id={{product.id}}&op=minus">-</a>
-                        <button type="button" class="btn btn-outline-dark btn-sm">{{quantity}}</button>
-                        <a class="btn btn-outline-dark btn-sm" href="/changeQty?id={{product.id}}&op=plus">+</a>
-                    </div>
-                    <a class="btn btn-danger btn-sm" href="/removeFromCart?id={{product.id}}" style="float:right;">Remove</a>
-                </div>
+                <a class="btn btn-danger btn-sm float-end" href="/removeFromCart?id={{product.id}}">Remove</a>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>
-    
+</div>
+
 {% else %}
-    
+
 <div class="d-flex justify-content-center my-5">
-    <img src="/media/images/empty_cart.png" alt="dfjdsf">
+    <img src="/media/images/empty_cart.png">
 
 </div>
 <br>
 <div class="d-grid gap-2 col-2 mx-auto">
-  <a class="btn btn-success btn-lg" href="/">Shop Now</a>
+    <a class="btn btn-success btn-lg" href="/">Shop Now</a>
 </div>
-    
+
 {% endif %}
 
 {% endblock %}

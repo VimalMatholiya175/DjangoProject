@@ -3,23 +3,18 @@ from django.shortcuts import render,redirect
 from ShoppingApp.models import Product,Category,Cart
 # Create your views here.
 
-def viewDetails(request):
+
+def productDetails(request):
 
 	id=request.GET.get('id',None)
 	if id==None:
 		return redirect('/')
 
 	product=Product.objects.get(id=id)
-	
-	# quantity=0
-
-	# if request.user.is_authenticated :
-	# 	cart=Cart.objects.filter(product=product,user=request.user)
-	# 	if cart :
-	# 		quantity=cart[0].quantity
 
 	data={'product':product}
-	return render(request,'viewDetails.html', data)
+	return render(request,'productDetails.html', data)
+
 
 
 def displayCategory(request):
@@ -41,6 +36,7 @@ def displayCategory(request):
 	
 	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 	return render(request,'displayCategory.html',data)
+
 
 
 def xfilter(request):
@@ -78,13 +74,14 @@ def xfilter(request):
 		if price == 'lth':
 			products=Product.objects.order_by('price').filter(category=category)
 		else:
-			products=Product.objects.order_by('price').filter(category=category)
+			products=Product.objects.order_by('-price').filter(category=category)
 
 	allProducts.append(products)
 	
 	data={'allProducts':allProducts,'categories':categories,'companies':companies,'category':selectedCategory}
 
 	return render(request,'displayCategory.html',data)
+
 
 
 def search(request):

@@ -19,14 +19,25 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Wonder Cart</a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-3 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
+                    
+                    {% block logout %} {% endblock %}
+                
                 </ul>   
+                        
             </div>
         </div>
     </nav>
+
+    {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show my-1 text-center text-white" role="alert" style="background-color: #f94949">
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
 
     {% block body %} {% endblock %}
 

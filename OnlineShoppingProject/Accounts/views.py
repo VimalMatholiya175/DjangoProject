@@ -1,30 +1,42 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.http import HttpResponse
+
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
+from django.views import View
+
 from .models import Customer
 # Create your views here.
 
-def login(request):
-    if request.method=='POST':
-        username=request.POST['username']
-        password=request.POST['password']
+
+class Login(View):
+    returnUrl=None
+    
+    def post(self,request):
         
-        user=auth.authenticate(username=username,password=password)
+        user=auth.authenticate(username=request.POST['username'],password=request.POST['password'])
 
         if user is not None:
             auth.login(request,user)
-            return redirect('/')
+            
+            if Login.returnUrl:
+                return HttpResponseRedirect(Login.returnUrl)
+            else:
+                Login.returnUrl=None
+                return redirect('/')
         else:
             messages.info(request,'Incorrect Username/Password')
             return redirect('login')
     
-    else:
-        
+    def get(self,request):
+
+        Login.returnUrl=request.GET.get('returnUrl')
         return render(request,'login.html')
 
-def signup(request):
-    if request.method=='POST':
+
+class SignUp(View):
+    
+    def post(self,request):
 
         firstname=request.POST['firstname']
         lastname=request.POST['lastname']
@@ -33,7 +45,6 @@ def signup(request):
         password=request.POST['password']
         cpassword=request.POST['confirmpassword']
         mobileno=request.POST['mobileno']
-        address=request.POST['address']
 
         if password==cpassword:
 
@@ -48,25 +59,28 @@ def signup(request):
             else:
                 user=User.objects.create_user(first_name=firstname,last_name=lastname,username=username,email=email,password=password)
                 user.save()
-                customer=Customer(user=user,mobileNo=mobileno,address=address)
+                customer=Customer(user=user,mobileNo=mobileno)
                 customer.save()
                 return redirect('login')
         
         else:
             messages.info(request,'Password doesn\'t match')
             return redirect('signup')
-    else:
-        
+    
+    def get(self,request):
+
         return render(request,'signup.html')
+
 
 def logout(request):
     auth.logout(request)
     return redirect('/')
 
 
-def resetPassword(request):
+class ResetPassword(View):
 
-    if request.method=="POST":
+    def post(self,request):
+
         username=request.POST['username']
         password=request.POST['password']
         cpassword=request.POST['confirmpassword']
@@ -83,30 +97,28 @@ def resetPassword(request):
         else:
             messages.info(request,'Username doesn\'t exists')
             return redirect('resetPassword')
-    else:
+    
+    def get(self,request):
+
         return render(request,'resetPassword.html')
 
 
-def viewProfile(request):
-    if request.method=='POST':
-        request.user.first_name=request.POST.get('firstname','')
-        request.user.last_name=request.POST.get('lastname','')
-        request.user.username=request.POST.get('username','')
-        request.user.email=request.POST.get('email','')
+class ViewProfile(View):
+
+    def post(self,request):
+
+        request.user.first_name=request.POST['firstname']
+        request.user.last_name=request.POST['lastname']
+        request.user.username=request.POST['username']
+        request.user.email=request.POST['email']
         request.user.save()
         customer=Customer.objects.get(user_id=request.user.id)
-        customer.mobileNo=request.POST.get('mobileno','')
-        customer.address=request.POST.get('address','')
+        customer.mobileNo=request.POST['mobileno']
         customer.save()
 
-        request.user.save()
         return redirect('/accounts/viewProfile')
 
-    else:
-
-        if request.user.is_authenticated :
-            customer=Customer.objects.get(user_id=request.user.id)
-            return render(request,'viewProfile.html',{'customer':customer})
-
-        else:
-            return redirect('/')
+    def get(self,request):
+        
+        customer=Customer.objects.get(user_id=request.user.id)
+        return render(request,'viewProfile.html',{'customer':customer})
