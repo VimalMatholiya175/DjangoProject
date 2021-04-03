@@ -11,7 +11,13 @@ def productDetails(request,id):
 
 	product=Product.objects.get(id=id)
 
-	data={'product':product}
+	products=Product.objects.filter(name=product.name)
+
+	sProducts=set()
+	for prod in products:
+		sProducts.add((prod.id,prod.get_color_display(),prod.get_ram_display(),prod.get_storage_display()))
+
+	data={'product':product,'sProducts':sProducts}
 	return render(request,'productDetails.html', data)
 
 

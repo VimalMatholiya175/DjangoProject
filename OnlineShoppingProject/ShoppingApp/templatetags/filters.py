@@ -22,7 +22,6 @@ def isInCart(product,user):
 	cart=Cart.objects.filter(product=product,user=user)
 	if cart :
 		return True
-
 	return False
 
 
@@ -30,7 +29,6 @@ def isInCart(product,user):
 def hasRam(category):	
 	if category.name in ['Mobile','Laptop']:
 		return True
-
 	return False
 
 
@@ -38,9 +36,7 @@ def hasRam(category):
 def amountToPay(products):	
 	actualAmount=0
 	for product,quantity in products:
-
 		actualAmount+=actualPrice(product)*quantity
-
 	return actualAmount
 
 
@@ -66,10 +62,8 @@ def deliverydays(products):
 def totalProducts(user):
 	carts=Cart.objects.filter(user=user)
 	totalProducts = 0
-	
 	for cart in carts:
 		totalProducts+=cart.quantity
-
 	return totalProducts
 
 

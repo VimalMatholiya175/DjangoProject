@@ -4,7 +4,7 @@ def isLoggedIn(get_response):
 
 	def middleware(request):
 
-		returnUrl=request.META['PATH_INFO']
+		returnUrl=request.get_full_path()
 	
 		if not request.user.is_authenticated:
 			return redirect(f'/accounts/login?returnUrl={returnUrl}')
