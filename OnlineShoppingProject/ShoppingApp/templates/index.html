@@ -102,6 +102,7 @@
                     <h3 class="d-inline-block">{{product|actualPrice}}</h3>
                     {% if product.discount %} <s>{{product.price}}</s> {% endif %}
                     <h5>{{product.specialOfferDesc|linebreaks}}</h5>
+                   
                     <a class="btn btn-dark" href="/checkout?id={{product.id}}">Buy Now</a>
                     <a class="btn btn-dark mx-2" href="/viewProducts/productDetails/{{product.id}}">View Details</a>
                 </div>
@@ -133,16 +134,11 @@
 </div>
 
 
-
 {% for products in allProducts %}
 
-
-
 <div class="container my-4">
-    <hr class="text-primary">
-    <h4>{{products.0.category.name}}</h4>
-    <hr class="text-primary">
-    <div class="row row-cols-1 row-cols-md-5 g-4 my-2">
+    <h4 class="my-4">{{products.0.category.name}}</h4>
+    <div class="row row-cols-1 row-cols-md-5 g-1 my-2">
         {% for product in products %}
         <a href="/viewProducts/productDetails/{{product.id}}" class="text-dark">
             <div class="col" style="height: 320px">

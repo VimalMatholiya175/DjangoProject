@@ -13,6 +13,6 @@ urlpatterns=[
     path('removeFromCart/<int:productId>',views.removeFromCart,name='removeFromCart'),
     path('checkout',isLoggedIn(views.Checkout.as_view()),name='checkout'),
     path('orders',isLoggedIn(views.orders),name='orders'),
-    path('cancelOrder/<int:orderId>',views.cancelOrder,name='cancelOrder'),
+    path('cancelOrder',isLoggedIn(views.cancelOrder),name='cancelOrder'),
 
 ]

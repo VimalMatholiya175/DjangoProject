@@ -7,31 +7,28 @@
 {% block body %}
 
 <div class="container">
-	
-	{% if not status %}
 
 	<div class="row">
 		<div class="col-md-6 p-2 my-5">
+			
 			<hr class="text-primary">
+			
 			<h4 class="d-inline-block">Order Details</h4>
 			<a class="btn btn-primary float-end" href="/viewCart">Update</a>
-			<a class="btn btn-primary float-end mx-2" href="/checkout?id={{id}}&status=confirmed">Confirm</a>
+			<button class="btn btn-primary float-end mx-2" data-bs-toggle="modal" data-bs-target="#checkoutform">Confirm</button>
+			
 			<hr class="text-primary"> 
+			
 			<div class="row row-cols-1 row-cols-md-3 g-2 my-3">
 				{% for product,quantity in products %}
 				<div class="col" style="height: 330px">
-					<div class="card h-100">
-						<a href="/viewProducts/productDetails/{{product.id}}">
-							<img src="/media/{{product.image}}" class="card-img-top" />
-						</a>
+					<div class="card h-100">						
+						<img src="/media/{{product.image}}" class="card-img-top" />
 						<div class="card-body">
-							<a href="/viewProducts/productDetails/{{product.id}}" style="text-decoration: none;"
-								class="text-dark">
-								<h6>{{product.name}}</h6>
-								<sup>&#x20B9;</sup>
-								<h5 class="d-inline-block"> {{product|actualPrice}} </h5>
-								{% if product.discount %} <s>{{product.price}}</s> {% endif %}
-							</a>
+							<h6>{{product.name}}</h6>
+							<sup>&#x20B9;</sup>
+							<h5 class="d-inline-block"> {{product|actualPrice}} </h5>
+							{% if product.discount %} <s>{{product.price}}</s> {% endif %}
 						</div>
 						<div class="card-footer text-center">
 							Qty : {{quantity}}
@@ -61,77 +58,84 @@
 				<tr>
 					<th colspan="2" class="my-2">Delivery in {{products|deliveryDays}} Days</th>
 				</tr>
-				{% if products|totalSavings %}
-				<tr>
-					<td colspan="2" class="text-success my-2">You have saved &#x20B9;
-						{{products|totalSavings}}</td>
-				</tr>
-				{% endif %}
 			</table>
+            <hr class="text-primary">
+            {% if products|totalSavings %}
+                <p class="text-success my-2">
+                    You have saved &#x20B9;{{products|totalSavings}}
+                </p>
+            {% endif %}
 		</div>
 	</div>
 
-	{% else %}
-	
-	<div class="p-5 w-75">
-		<h4 class="mb-5">Checkout Form</h4>
-		<form action="checkout" method="POST" class="row g-3">
-			{% csrf_token %}
-			<input type="hidden" name="id" value="{{id}}">
-			<div class="col-md-6">
-				<label for="firstname" class="form-label">First Name</label>
-				<input type="text" class="form-control" name="firstname" id="firstname" value="{{user.first_name}}"
-					pattern="[A-Za-z]+" required>
-			</div>
-			<div class="col-md-6">
-				<label for="lastname" class="form-label">Last Name</label>
-				<input type="text" class="form-control" name="lastname" id="lastname" value="{{user.last_name}}"
-					pattern="[A-Za-z]+" required>
-			</div>
-			<div class="col-md-6">
-				<label for="mobileno" class="form-label">Mobile No.</label>
-				<input type="tel" class="form-control" name="mobileno" id="mobileno" value="{{customer.mobileNo}}"
-					pattern="[0-9]{10}" required>
-			</div>
-			<div class="col-md-6">
-				<label for="pincode" class="form-label">Pincode</label>
-				<input type="text" pattern="[0-9]{6}" class="form-control" name="pincode" id="pincode"
-					value="{% if customer.city %}{{customer.pincode}}{% endif %}">
-			</div>
-			<div class="col-md-6">
-				<label for="city" class="form-label">City</label>
-				<input type="text" class="form-control" name="city" id="city" pattern="[A-Za-z]+" maxlength="20"
-					value="{% if customer.city %}{{customer.city}}{% endif %}" required>
-			</div>
-			<div class="col-md-6">
-				<label for="state" class="form-label">State</label>
-				<input type="text" class="form-control" name="state" id="state" maxlength="20" pattern="[A-Za-z]+"
-					value="{% if customer.city %}{{customer.state}}{% endif %}" required>
-			</div>
-			<div class="col-12">
-				<label for="address" class="form-label">Address</label>
-				<textarea class="form-control" name="address" maxlength="250" id="address"
-					required>{% if customer.city %}{{customer.address}}{% endif %}</textarea>
-			</div>
-			<div class="col-md-12">
-				<input class="form-check-input" type="checkbox" name="save" value="True" id="save">
-				<label class="form-check-label" for="save">Save details for later</label>
-			</div>
-			<div class="col-md-12">
-				<select class="form-select" name="paymentmethod" aria-label="Default select example">
-					<option selected value="cod">Cash on Delivery</option>
-					<option value="credit">Pay by Creditcard</option>
-					<option value="upi">Pay by UPI</option>
-				</select>
-			</div>
-			<div class="col-12">
-				<button type="submit" class="btn btn-primary">Place Order</button>
-			</div>
-		</form>
-	</div>
-	
-	{% endif %}
+</div>
 
+<div class="modal fade" id="checkoutform" tabindex="-1" aria-labelledby="checkout" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkout">Checkout Form</h5>
+            </div>
+			<form action="checkout" method="POST" class="row g-3 p-3">
+				{% csrf_token %}
+				{% if id %}
+				<input type="hidden" name="id" value="{{id}}">
+				{% endif %}
+				<div class="col-md-6">
+					<label for="firstname" class="form-label">First Name</label>
+					<input type="text" class="form-control" name="firstname" id="firstname" value="{{user.first_name}}"
+					pattern="[A-Za-z]+" required>
+				</div>
+				<div class="col-md-6">
+					<label for="lastname" class="form-label">Last Name</label>
+					<input type="text" class="form-control" name="lastname" id="lastname" value="{{user.last_name}}"
+					pattern="[A-Za-z]+" required>
+				</div>
+				<div class="col-md-6">
+					<label for="mobileno" class="form-label">Mobile No.</label>
+					<input type="tel" class="form-control" name="mobileno" id="mobileno" value="{{customer.mobileNo}}"
+					pattern="[0-9]{10}" required>
+				</div>
+				<div class="col-md-6">
+					<label for="pincode" class="form-label">Pincode</label>
+					<input type="text" pattern="[0-9]{6}" class="form-control" name="pincode" id="pincode"
+					value="{% if customer.city %}{{customer.pincode}}{% endif %}" required>
+				</div>
+				<div class="col-md-6">
+					<label for="city" class="form-label">City</label>
+					<input type="text" class="form-control" name="city" id="city" pattern="[A-Za-z]+" maxlength="20"
+					value="{% if customer.city %}{{customer.city}}{% endif %}" required>
+				</div>
+				<div class="col-md-6">
+					<label for="state" class="form-label">State</label>
+					<input type="text" class="form-control" name="state" id="state" maxlength="20" pattern="[A-Za-z]+"
+					value="{% if customer.city %}{{customer.state}}{% endif %}" required>
+				</div>
+				<div class="col-12">
+					<label for="address" class="form-label">Address</label>
+					<textarea class="form-control" name="address" maxlength="250" id="address"
+					required>{% if customer.city %}{{customer.address}}{% endif %}</textarea>
+				</div>
+				<div class="col-md-12">
+					<input class="form-check-input" type="checkbox" name="save" value="True" id="save">
+					<label class="form-check-label" for="save">Save details for later</label>
+				</div>
+				<div class="col-md-12">
+					<select class="form-select" name="paymentmethod" aria-label="Default select example">
+						<option selected value="cod">Cash on Delivery</option>
+						<option value="credit">Pay by Creditcard</option>
+						<option value="upi">Pay by UPI</option>
+					</select>
+				</div>
+			
+				<div class="modal-footer">
+                	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            		<button class="btn btn-primary col-md-12 w-25" type="submit">Place Order
+                	</button>
+            	</div>
+            </form>
+		</div>    
+    </div>
 </div>
 
 {% endblock %}

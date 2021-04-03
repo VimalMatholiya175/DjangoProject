@@ -1,0 +1,68 @@
+{% extends 'basicHome.html' %}
+
+{% load filters %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block body %}
+
+{% if products|length > 0 %}
+
+{% for message in messages %}
+
+<div class="alert alert-danger alert-dismissible fade show my-1 text-center text-white" role="alert" style="background-color: #f94949">
+    {{message}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endfor %}
+
+<div class="container">
+
+    <div class="mt-5 border rounded-3 p-3">
+        <h5 class="d-inline-block">Total Amount :<strong> &#x20B9; </strong> {{products|amountToPay}}</h5>
+        <a class="btn btn-primary float-end" href="/checkout">Place Order</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-5 g-1 my-3">
+        {% for product,quantity in products %}
+        <div class="col" style="height: 380px">
+            <div class="card h-100">
+                <a href="/viewProducts/productDetails/{{product.id}}"  class="text-dark" style="text-decoration: none;">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                </a>
+                <div class="card-body">
+                    <a href="/viewProducts/productDetails/{{product.id}}" class="text-dark" style="text-decoration: none">
+                        <h6>{{product.name}}</h6>
+                        <sup>&#x20B9;</sup>
+                        <h5 class="d-inline-block"> {{product|actualPrice}} </h5>
+                        {% if product.discount %} <s>{{product.price}}</s> {% endif %}
+                    </a>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group btn-block float-strat" role="group" aria-label="Basic outlined example">
+                        <a class="btn btn-outline-dark btn-sm" href="/changeQty/{{product.id}}/minus">-</a>
+                        <button type="button" class="btn btn-outline-dark btn-sm">{{quantity}}</button>
+                        <a class="btn btn-outline-dark btn-sm" href="/changeQty/{{product.id}}/plus">+</a>
+                    </div>
+                    <a class="btn btn-danger btn-sm float-end" href="/removeFromCart/{{product.id}}">Remove</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% else %}
+
+<div class="d-flex justify-content-center my-5">
+    <img src="/media/images/empty_cart.png">
+</div>
+<br>
+<div class="d-grid gap-2 col-2 mx-auto">
+    <a class="btn btn-success btn-lg" href="/">Shop Now</a>
+</div>
+
+{% endif %}
+
+{% endblock %}

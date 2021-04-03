@@ -18,38 +18,85 @@
 {% endfor %}
 
 <div class="container">
-
-    <div class="mt-5 border rounded-3 p-3">
-        <h5 class="d-inline-block">Total Amount :<strong> &#x20B9; </strong> {{products|amountToPay}}</h5>
-        <a class="btn btn-primary float-end" href="/checkout">Place Order</a>
-    </div>
-
-    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+    <div class="row">
+    <div class="col-md-6 mt-3">
+        <hr class="text-primary">
+        <h4 class="mb-4">Your Cart</h4>
+        <hr class="text-primary">
         {% for product,quantity in products %}
-        <div class="col" style="height: 360px">
-            <div class="card h-100">
-                <a href="/viewProducts/productDetails/{{product.id}}"  class="text-dark" style="text-decoration: none;">
-                    <img src="/media/{{product.image}}" class="card-img-top" />
-                </a>
-                <div class="card-body">
-                    <a href="/viewProducts/productDetails/{{product.id}}" class="text-dark" style="text-decoration: none">
-                        <h6>{{product.name}}</h6>
-                        <sup>&#x20B9;</sup>
-                        <h5 class="d-inline-block"> {{product|actualPrice}} </h5>
-                        {% if product.discount %} <s>{{product.price}}</s> {% endif %}
-                    </a>
+        <div class="card mb-3" id="{{product.id}}">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="/media/{{product.image}}" class="card-img-top"/>
                 </div>
-                <div class="card-footer">
-                    <div class="btn-group btn-block float-strat" role="group" aria-label="Basic outlined example">
+                <div class="col-md-8">
+                <div class="card-body my-3 mx-5">
+                    <h5 class="card-title">{{product.name}}</h5>
+                    <sup>&#x20B9;</sup>
+                    <h5 class="d-inline-block">     
+                        {{product|actualPrice}} 
+                    </h5>
+                        
+                    {% if product.discount %} 
+                        <s>{{product.price}}</s> 
+                    {% endif %}
+
+                    <br>
+                    <table cellpadding="7">
+                    <tr>
+                        <th class="text-primary">Color</th>
+                        <td>{{product.color}}</td>
+                    </tr>
+                    {% if product.category|hasRam %}
+                    <tr>
+                        <th class="text-primary">Storage</th>
+                        <td>{{product.ram}}-{{product.storage}}</td>
+                    </tr>
+                    {% endif %}
+                    </table>
+                
+                    <div class="btn-group btn-block mt-2" role="group" aria-label="Basic outlined example">
                         <a class="btn btn-outline-dark btn-sm" href="/changeQty/{{product.id}}/minus">-</a>
                         <button type="button" class="btn btn-outline-dark btn-sm">{{quantity}}</button>
                         <a class="btn btn-outline-dark btn-sm" href="/changeQty/{{product.id}}/plus">+</a>
                     </div>
-                    <a class="btn btn-danger btn-sm float-end" href="/removeFromCart/{{product.id}}">Remove</a>
+                    <a class="btn btn-danger btn-sm mt-2 mx-3" href="/removeFromCart/{{product.id}}">Remove</a>
+                </div>
                 </div>
             </div>
         </div>
         {% endfor %}
+    </div>
+    <div class="col-md-1 mt-3"></div>
+    <div class="col-md-5 mt-3">
+            <hr class="text-primary">
+            <h4 class="mb-4">Price Details</h4>
+            <hr class="text-primary">
+            <table class="w-100">
+                <tr>
+                    <th class="float-start my-2">Total Amount</th>
+                    <td class="float-end">&#x20B9;{{products|amountToPay}}</td>
+                </tr>
+                <tr>
+                    <th class="float-start my-2">Delivery Charge</th>
+                    <td class="float-end text-success">Free</td>
+                </tr>
+                <tr>
+                    <th class="float-start my-2">Amount To Pay</th>
+                    <td class="float-end">&#x20B9;{{products|amountToPay}}</td>
+                </tr>
+            </table>
+            <hr class="text-primary">
+            
+            {% if products|totalSavings %}
+                <p class="text-success my-2">
+                    You will save &#x20B9;{{products|totalSavings}}
+                </p>
+            {% endif %}
+            
+            <a class="btn btn-primary my-3" href="/checkout">Checkout</a>
+        
+        </div>
     </div>
 </div>
 

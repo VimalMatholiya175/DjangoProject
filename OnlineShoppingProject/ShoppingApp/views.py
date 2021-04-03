@@ -52,12 +52,11 @@ def addToCart(request):
 	product=Product.objects.get(id=productId)
 	cart=Cart.objects.filter(product=product,user=request.user)
 
-	if cart:
-		cart[0].quantity+=1
-		cart[0].save()
-	else:
+	if not cart:
 		cart=Cart(product=product,user=request.user,quantity=1)
 		cart.save()
+	else:
+		return redirect('/')
 
 	return redirect('/viewProducts/productDetails/'+productId)
 
@@ -82,7 +81,7 @@ def changeQty(request,productId,op):
 
 		cart[0].save()
 
-	return redirect('/viewCart')
+	return redirect('/viewCart#'+str(productId))
 
 		
 def removeFromCart(request,productId):
@@ -103,25 +102,32 @@ class Checkout(View):
 	def get(self,request):
 
 		productId=request.GET.get('id')
-		status=request.GET.get('status')
 		
 		products=[]
 		customer=Customer.objects.get(user_id=request.user.id)
+	
 		if productId:
 			product=Product.objects.get(id=productId)
 			if not product.quantity:
 				return redirect('/')
-			products.append((product,1))
-		
+			cart=Cart.objects.filter(product=product,user=request.user)
+
+			if not cart:
+				cart=Cart(product=product,user=request.user,quantity=1)
+				cart.save()
+
+			carts=Cart.objects.filter(product=product,user=request.user)
+
 		else:
 			carts=Cart.objects.filter(user=request.user)
-			if not carts:
-				return redirect('/')
-			for cart in carts:
-				product=Product.objects.get(id=cart.product.id)
-				products.append((product,cart.quantity))
 
-		data={'products':products,'id':productId,'customer':customer,'status':status}
+		if not carts:
+			return redirect('/')
+		for cart in carts:
+			product=Product.objects.get(id=cart.product.id)
+			products.append((product,cart.quantity))
+
+		data={'products':products,'id':productId,'customer':customer}
 		return render(request,'checkout.html',data)
 
 	def post(self,request):
@@ -148,22 +154,20 @@ class Checkout(View):
 
 		productId=request.POST.get('id')
 
-		if productId != 'None':
+		if productId:
 			product=Product.objects.get(id=productId)
-			product.quantity-=1
-			product.save()
-			order=Order(product=product,user=request.user,quantity=1,name=firstname+' '+lastname,mobileNo=mobileNo,pincode=pincode,city=city,state=state,address=address)
-			order.save()
-	 	
+			carts=Cart.objects.filter(product=product,user=request.user)
 		else:
 			carts=Cart.objects.filter(user=request.user)
-			for cart in carts:
-				cart.product.quantity-=cart.quantity
-				cart.product.save()
-				order=Order(product=cart.product,user=cart.user,quantity=cart.quantity,name=firstname+' '+lastname,mobileNo=mobileNo,pincode=pincode,city=city,state=state,address=address)
-				order.save()
-				cart.delete()
 		
+		for cart in carts:
+			cart.product.quantity-=cart.quantity
+			cart.product.save()
+			order=Order(product=cart.product,user=cart.user,quantity=cart.quantity,name=firstname+' '+lastname,mobileNo=mobileNo,pincode=pincode,city=city,state=state,address=address)
+			order.save()
+			cart.delete()
+		
+		messages.success(request,'Your Order is placed successfully.... Check Here')
 		return redirect('/orders')
 
 
@@ -177,13 +181,18 @@ def orders(request):
 		data={'orders':orders}
 		return render(request,'orders.html',data)
 
-def cancelOrder(request,orderId):
+def cancelOrder(request):
+
+	orderId=request.GET.get('id')
 
 	if orderId:
 		order=Order.objects.get(id=orderId)
-		order.product.quantity+=order.quantity
-		order.product.save()
-		order.delete()
-		return redirect('/orders')
+		if not order.orderStatus:
+			order.product.quantity+=order.quantity
+			order.product.save()
+			order.delete()
+			return redirect('/orders')
+		else:
+			return redirect('/')
 	else:
 		return redirect('/')

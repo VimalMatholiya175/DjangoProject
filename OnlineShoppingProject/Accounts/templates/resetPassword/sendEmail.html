@@ -1,0 +1,19 @@
+{% extends 'basicAccounts.html' %}
+
+{% block title%}Reset Password {% endblock %}
+
+{% block body %}
+
+<div class="container my-4 p-5 border" style="width:400px" align="center">
+  <h3 class="text-center">Send E-mail</h3><br>
+  <form method="post">
+
+    {% csrf_token %}
+    <label for="email" class="form-label">Email</label>
+    <input class="form-control" type="email" name="email" maxlength="254" id="email" required>
+
+    <button type="submit" class="btn btn-primary my-3 w-50">Send E-mail</button>
+  </form>
+</div>
+
+{% endblock %}
