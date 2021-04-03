@@ -1,0 +1,131 @@
+{% extends 'basicHome.html' %}
+
+{% load filters %}
+
+{% block title %} Wonder Cart {% endblock %}
+
+{% block css %}
+
+<style>
+    .category {
+        width: 1115px;
+        padding: 15px;
+        margin: 20px auto;
+        border-radius: 6px;
+        background-color: #f2efef;
+    }
+
+    .center-block {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width:55px;
+        height:55px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .search {
+        width: 600px;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block filter %}
+
+<button class="btn btn-outline-success mx-1 filter" data-bs-toggle="modal" data-bs-target="#filtermodal"
+    aria-current="page">Filter</button>
+
+{% endblock %}
+
+
+{% block search %}
+
+<form action="/viewProducts/search" class="d-flex mx-2 search">
+
+    <input class="form-control me-2" type="text" name="keyword" placeholder="Search" aria-label="Search" required>
+    <button class="btn btn-outline-success" type="submit">Search</button>
+
+</form>
+
+{% endblock %}
+
+
+{% block body %}
+
+<div class="modal fade" id="filtermodal" tabindex="-1" aria-labelledby="filter" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/viewProducts/afilter/{{category}}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Price</h5>
+                </div>
+                <div class="modal-body">
+                    <input class="form-check-input" type="radio" name="price" id="lowToHigh" value="lth">
+                    <label class="form-check-label mx-2" for="lowToHigh">Low-High</label>
+                    <input class="form-check-input" type="radio" name="price" id="highToLow" value="htl">
+                    <label class="form-check-label mx-2" for="highToLow">High-Low</label>
+                </div>
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter">Brand</h5>
+                </div>
+                <div class="modal-body">
+                    {% for company in companies %}
+                    {% if forloop.counter|divisibleby:"6" %}
+                    <br><br>
+                    {% endif %}
+                    <input class="form-check-input" type="radio" name="company" id="company{{forloop.counter}}"
+                        value="{{company}}">
+                    <label class="form-check-label mx-2" for="company{{forloop.counter}}">{{company}}</label>
+                    {% endfor %}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Apply</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<div class="row category">
+    {% for category in user|allCategories %}
+    <div class="col">
+        <a href="/viewProducts/afilter/{{category.name}}" class="text-dark">
+            <img src="/media/{{category.image}}" class="center-block">
+            <h6 class="text-center">{{category.name}}</h6>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+{% for products in allProducts %}
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-5 g-4 my-3">
+        {% for product in products %}
+        <a href="/viewProducts/productDetails/{{product.id}}" class="text-dark">
+            <div class="col" style="height: 320px">
+                <div class="card h-100">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                    <div class="card-body">
+                        <h6>{{product.name}}</h6>
+                        <sup>&#x20B9;</sup>
+                        <h5 class="d-inline-block">{{product|actualPrice}}</h5>
+                        {% if product.discount %} <s>{{product.price}}</s> {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

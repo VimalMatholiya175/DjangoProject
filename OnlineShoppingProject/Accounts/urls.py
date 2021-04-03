@@ -9,7 +9,7 @@ urlpatterns=[
     path('login',views.Login.as_view(),name='login'),
     path('signup',views.SignUp.as_view(),name='signup'),
     path('logout',views.logout),
-    path('resetPassword',views.ResetPassword.as_view(),name='resetPassword'),
     path('viewProfile',isLoggedIn(views.ViewProfile.as_view()),name='viewProfile'),
+    
 
 ]

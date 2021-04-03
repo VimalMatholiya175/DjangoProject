@@ -7,39 +7,44 @@
 {% block css %}
 
 <style>
-    .specialProducts{
-        margin:20px 25px;
-        padding:0px 50px;
-        border:1px solid rgb(255, 217, 0);
+    .specialProduct {
+        margin: 20px 25px;
+        padding: 0px 50px;
         border-radius: 6px;
     }
-    .specialProducts img{
+
+    .specialProduct img {
         height: 450px;
     }
-    .specialOfferDesc{
-        padding:100px;
+
+    .specialProductDesc {
+        padding: 100px;
     }
-    .mycontainer {
-        width: 1115px;
-        padding: 15px;
-        border: 1px solid rgb(255, 238, 0);
-        margin: 20px auto;
-        border-radius: 6px;
-    }
+
     .center-block {
-        width: 40px;
-        height: 40px;
         display: block;
         margin-left: auto;
         margin-right: auto;
+        width:55px;
+        height:55px;
     }
-    .mycontainer a{
+
+    .category {
+        width: 1115px;
+        background-color: #f2efef;
+        padding: 15px;
+        margin: 20px auto;
+        border-radius: 6px;
+    }
+
+    a {
         text-decoration: none;
-        color: black;
     }
-    .search{
-        width:600px;
+
+    .search {
+        width: 600px;
     }
+    
 </style>
 
 {% endblock %}
@@ -47,7 +52,7 @@
 
 {% block search %}
 
-<form  action="/viewProducts/search" class="d-flex search mx-2">
+<form action="/viewProducts/search" class="d-flex search mx-2">
     <input class="form-control me-2" type="text" name="keyword" placeholder="Search" aria-label="Search" required>
     <button class="btn btn-outline-success" type="submit">Search</button>
 </form>
@@ -56,62 +61,54 @@
 
 
 {% block body %}
-<div id="specialProducts" class="carousel slide specialProducts" data-bs-ride="carousel" >
+<div id="specialProducts" class="carousel slide specialProduct border border-warning" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#specialProducts" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 0"></button>
-        
+
         {% for product in specialProducts %}
-            
-            <button type="button" data-bs-target="#specialProducts" data-bs-slide-to="{{forloop.counter}}" aria-label="Slide {{forloop.counter}}"></button>
-        
+        <button type="button" data-bs-target="#specialProducts" data-bs-slide-to="{{forloop.counter}}" aria-label="Slide {{forloop.counter}}"></button>
         {% endfor %}
-    
+
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
             <div class="row">
-                <div class="col align-items-center">
+                <div class="col">
                     <img src="/media/{{activeProduct.image}}" class="d-block w-100">
                 </div>
-                <div class="col specialOfferDesc">
+                <div class="col specialProductDesc">
                     <h3>{{activeProduct.name}}</h3>
-                    
                     <sup>&#x20B9;</sup>
                     <h3 class="d-inline-block">{{activeProduct|actualPrice}}</h3>
-                    {% if activeProduct.discount %}
-                        &nbsp;<s> &#x20B9;{{activeProduct.price}}</s>
-                    {% endif %}
-                    
+                    {% if activeProduct.discount %} <s>{{activeProduct.price}}</s> {% endif %}
                     <h5>{{activeProduct.specialOfferDesc|linebreaks}}</h5>
                     <a class="btn btn-dark" href="/checkout?id={{activeProduct.id}}">Buy Now</a>
 
-                    <a class="btn btn-dark mx-2" href="/viewProducts/productDetails?id={{activeProduct.id}}">View Details</a>
+                    <a class="btn btn-dark mx-2" href="/viewProducts/productDetails/{{activeProduct.id}}">View
+                        Details</a>
                 </div>
             </div>
         </div>
 
         {% for product in specialProducts %}
-            <div class="carousel-item">
-                <div class="row">
-                    <div class="col align-items-center">
-                        <img src="/media/{{product.image}}">
-                    </div>
-                    <div class="col specialOfferDesc">
-
-                        <h3>{{product.name}}</h3>
-                        <sup>&#x20B9;</sup>
-                        <h3 class="d-inline-block">{{product|actualPrice}}</h3>
-                        {% if product.discount %}
-                            &nbsp;<s> &#x20B9;{{product.price}}</s>
-                        {% endif %}
-                        <h5>{{product.specialOfferDesc|linebreaks}}</h5>
-                        <a class="btn btn-dark" href="/checkout?id={{product.id}}">Buy Now</a>
-                        <a class="btn btn-dark mx-2" href="/viewProducts/productDetails?id={{product.id}}">View Details</a>
-                    </div>
+        <div class="carousel-item">
+            <div class="row">
+                <div class="col">
+                    <img src="/media/{{product.image}}">
+                </div>
+                <div class="col specialProductDesc">
+                    <h3>{{product.name}}</h3>
+                    <sup>&#x20B9;</sup>
+                    <h3 class="d-inline-block">{{product|actualPrice}}</h3>
+                    {% if product.discount %} <s>{{product.price}}</s> {% endif %}
+                    <h5>{{product.specialOfferDesc|linebreaks}}</h5>
+                    <a class="btn btn-dark" href="/checkout?id={{product.id}}">Buy Now</a>
+                    <a class="btn btn-dark mx-2" href="/viewProducts/productDetails/{{product.id}}">View Details</a>
                 </div>
             </div>
+        </div>
         {% endfor %}
-        
+
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#specialProducts" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
@@ -123,53 +120,42 @@
     </button>
 </div>
 
-<div class="mycontainer">
 
-    <div class="row">
-        {% for category in categories %}
-            <div class="col">
-                <a href="/viewProducts/displayCategory?cat={{category.name}}">
-                    <img src="/media/{{category.image}}" alt="..." class="center-block">
-                    <h6 class="text-center">{{category.name}}</h6>
-                </a>
-            </div>
-        {% endfor %}
+<div class="row category">
+    {% for category in user|allCategories %}
+    <div class="col">
+        <a href="/viewProducts/afilter/{{category.name}}" class="text-dark">
+            <img src="/media/{{category.image}}" class="center-block icon">
+            <h6 class="text-center">{{category.name}}</h6>
+        </a>
     </div>
-
+    {% endfor %}
 </div>
+
 
 
 {% for products in allProducts %}
 
-<hr style="width: 1300px;margin: 0px 25px">
 
-<div class="container">
+
+<div class="container my-4">
+    <hr class="text-primary">
+    <h4>{{products.0.category.name}}</h4>
+    <hr class="text-primary">
     <div class="row row-cols-1 row-cols-md-5 g-4 my-2">
         {% for product in products %}
-        <a href="/viewProducts/productDetails?id={{product.id}}" style="text-decoration: none;color:black">
-        <div class="col" style="height: 360px">
-            <div class="card h-100">
-                <img src="/media/{{product.image}}" class="card-img-top" />
-                <div class="card-body">
-                    <h6 class="card-title text-center">{{product.name}}</h6>
-                
-                    <h6 class="card-title text-center">{{product.color}} 
-                        {% if product.category|hasRam %}
-                            ( {{product.ram}} | {{product.storage}} )
-                        {% endif %}
-                    </h6>
-                </div>
-                <div class="card-footer">
-                    <div class="text-center">
+        <a href="/viewProducts/productDetails/{{product.id}}" class="text-dark">
+            <div class="col" style="height: 320px">
+                <div class="card h-100">
+                    <img src="/media/{{product.image}}" class="card-img-top" />
+                    <div class="card-body">
+                        <h6>{{product.name}}</h6>
                         <sup>&#x20B9;</sup>
                         <h5 class="d-inline-block">{{product|actualPrice}}</h5>
-                        {%if product.discount %}
-                            &nbsp;<s> &#x20B9;{{product.price}}</s>
-                        {% endif %}
+                        {%if product.discount %} <s>{{product.price}}</s> {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
         </a>
         {% endfor %}
     </div>

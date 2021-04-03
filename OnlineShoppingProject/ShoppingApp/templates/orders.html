@@ -1,0 +1,77 @@
+{% extends 'basicHome.html' %}
+
+{% load filters %}
+
+{% block title %}Your Orders{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+
+    <h4 class="my-5">Your Orders</h4>
+
+    <table class="table">
+        <thead>
+            <tr class="text-center">
+                <th>#</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Ordered Date</th>
+                <th>Delivered Date</th>
+                <th>Order Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr  class="text-center">
+                <td>{{forloop.counter}}</td>
+                <td>{{order.product.name}}</td>
+                <td>{{order.product|actualPrice}}</td>
+                <td>{{order.quantity}}</td>
+                <td>{{order.orderDate}}</td>
+                <td>
+                    {% if order.deliverDate %}
+                        {{order.deliverDate}}
+                    {% else %}
+                        -
+                    {% endif %}                   
+                </td>
+                <td class="text-center">
+                    {% if order.orderStatus %}
+                        <span class="badge bg-success">Delivered</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">In Progress</span>
+                    {% endif %} 
+                </td>
+                <td>
+                    {% if not order.orderStatus %}
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelmodal{{order.id}}">Cancel</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% for order in orders %}
+        {% if not order.orderStatus %}
+            <div class="modal fade" id="cancelmodal{{order.id}}" tabindex="-1" aria-labelledby="cancel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <h5>Do you want to cancel order for</h5>
+                            <h5>"{{order.product.name}}"?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <a class="btn btn-primary" href="/cancelOrder/{{order.id}}">Yes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+</div>
+{% endblock %}

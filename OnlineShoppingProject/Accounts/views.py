@@ -34,6 +34,7 @@ class Login(View):
         return render(request,'login.html')
 
 
+
 class SignUp(View):
     
     def post(self,request):
@@ -72,35 +73,12 @@ class SignUp(View):
         return render(request,'signup.html')
 
 
+
 def logout(request):
+    
     auth.logout(request)
     return redirect('/')
 
-
-class ResetPassword(View):
-
-    def post(self,request):
-
-        username=request.POST['username']
-        password=request.POST['password']
-        cpassword=request.POST['confirmpassword']
-
-        if User.objects.filter(username=username).exists():
-            if password==cpassword:
-                user=User.objects.get(username=username)
-                user.set_password(password)
-                user.save()
-                return redirect('login')
-            else:
-                messages.info(request,'Password doesn\'t match')
-                return redirect('resetPassword')
-        else:
-            messages.info(request,'Username doesn\'t exists')
-            return redirect('resetPassword')
-    
-    def get(self,request):
-
-        return render(request,'resetPassword.html')
 
 
 class ViewProfile(View):
